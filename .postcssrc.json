@@ -1,0 +1,30 @@
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  },
+
+  "theme": {
+    "colors": {
+       "primary": "#1fb6ff",
+       "purple": "#7e5bef"
+    },
+    "screens": {
+      "sm": "400px", 
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px"
+    }
+  },
+
+  "fontFamily": {
+      "sans": ["Graphik", "sans-serif"],
+      "serif": ["Merriweather", "serif"]
+  },
+
+  "extend": {
+      "spacing": {
+          "8xl": "96rem",
+          "9xl": "128rem"
+      }
+  }
+}

@@ -1,0 +1,159 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '../../../zBase/security/service/auth.service';
+
+@Component({
+    selector: 'app-menu',
+    standalone: true,
+    imports: [CommonModule, AppMenuitem, RouterModule],
+    template: `<ul class="layout-menu">
+        <ng-container *ngFor="let item of model; let i = index">
+            <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
+            <li *ngIf="item.separator" class="menu-separator"></li>
+        </ng-container>
+    </ul> `
+})
+export class AppMenu {
+    model: MenuItem[] = [];
+    modelAdmin: MenuItem[] = [];
+    modelTeacher: MenuItem[] = [];
+    modelStudent: MenuItem[] = [];
+
+
+    constructor( private authService: AuthService) {
+        this.initializeMenu()
+    }
+
+    ngOnInit() {
+        this.authService.loadInfos();
+        this.checkAuthentication();
+        this.initializeMenu();
+    }
+
+        checkAuthentication() {
+        if (this.authService.authenticated) {
+            this.initializeMenu()
+        }
+    }
+
+    initializeMenu() {
+        this.modelAdmin = [
+            {
+                label: 'Home',
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/admin/view/dashboard'] }]
+            },
+            {
+                label: 'Teachers',
+                items: [
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/admin/view/teacher-list'] },
+                    { label: 'surveys', icon: 'pi pi-fw pi-list-check', routerLink: ['/app/admin/view/teacher-surveys'] },
+                ]
+            },
+            {
+                label: 'Students',
+                items: [
+                    {
+                        label: 'List',
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/app/admin/view/students-list']
+                    },
+                    {
+                        label: 'Answers',
+                        icon: 'pi pi-fw pi-send',
+                        routerLink: ['/app/admin/view/students-answers']
+                    }
+                ]
+            },
+            {
+                label: 'Configuration',
+                items: [   
+                    {
+                        label: 'Forms',
+                        icon: 'pi pi-fw pi-id-card',
+                        routerLink: ['/app/admin/view/forms']
+                    },                 
+                    {
+                        label: 'Roles',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/app/admin/view/roles']
+                    },
+                ]
+            }
+        ];
+        
+        this.modelTeacher = [
+            {
+                label: 'Home',
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/teacher/view/dashboard'] }]
+            },
+                        {
+                label: 'Students',
+                items: [
+                    {
+                        label: 'List',
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/app/teacher/view/students-list']
+                    },
+                    {
+                        label: 'Answers',
+                        icon: 'pi pi-fw pi-send',
+                        routerLink: ['/app/teacher/view/students-answers']
+                    }
+                ]
+            },
+            {
+                label: 'Surveys',
+                items: [
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/teacher/view/surveys'] },
+                    { label: 'Create', icon: 'pi pi-fw pi-plus', routerLink: ['/app/teacher/view/surveys/create'] },
+                ]
+            },
+            {
+                label: 'Configuration',
+                items: [                    
+                    {
+                        label: 'Forms',
+                        icon: 'pi pi-fw pi-id-card',
+                        routerLink: ['/app/teacher/view/forms']
+                    },
+                ]
+            }
+        ];
+
+        this.modelStudent = [
+            {
+                label: 'Home',
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/student/view/dashboard'] }]
+            },
+            {
+                label: 'Surveys',
+                items: [
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/student/view/surveys'] },
+                    { label: 'My Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/student/view/my-answers'] },
+                     { label: 'Recommandation', icon: 'pi pi-fw pi-bolt', routerLink: ['/app/student/view/recommandation'] },
+                ]
+            }
+        ];
+
+        
+        if (this.authService.authenticatedUser.roleDtos) {
+
+            for (let i = 0; i < this.authService.authenticatedUser.roleDtos.length; i++) {
+                const role = this.authService.authenticatedUser.roleDtos[i].toString();
+                if (role === 'ROLE_ADMIN' && this.authService.isAdmin === true) {
+                    this.model = this.modelAdmin;
+                } else if (role === 'ROLE_TEACHER' && this.authService.isTeacher === true) {
+                    this.model = this.modelTeacher;
+                } else if (role === 'ROLE_STUDENT' && this.authService.isStudent === true) {
+                    this.model = this.modelStudent;
+                }   
+            }
+        }
+
+    }
+
+
+}
