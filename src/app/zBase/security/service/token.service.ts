@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpRequest} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpHandler, HttpHandlerFn, HttpHeaders, HttpRequest} from "@angular/common/http";
 import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {catchError, filter, switchMap, take} from "rxjs/operators";
 import {Router} from "@angular/router";
@@ -55,48 +55,70 @@ export class TokenService {
     private isRefreshing = false;
     private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-    public handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (!this.isRefreshing) {
-            this.isRefreshing = true;
-            this.refreshTokenSubject.next(null);
+    public handle401Error(
+      request: HttpRequest<any>,
+      next: HttpHandlerFn
+    ): Observable<HttpEvent<any>> {
 
-            const refreshToken = this.refreshToken();
-            if (refreshToken) {
-                console.log("start refreshing token");
-                const body = { refreshToken: refreshToken };
-                return this.http.post<TokenResponse>(environment.apiUrlService + 'refresh-token', body).pipe(
-                    switchMap((response: any) => {
-                        console.log("token refreshed : ",response)
-                        this.isRefreshing = false;
-                        this.saveToken(response.accessToken, response.refreshToken);
-                        this.messageService.add({severity: 'success', summary: 'Refresh Token', detail: 'We just refreshed your token'});
-                        this.messageService.add({severity: 'success', summary: 'Note', detail: 'Please refresh the page if the data was not received'});
-                        return next.handle(this.addTokenToRequest(request, response.accessToken));
-                    }),
-                    catchError(() => {
-                        this.isRefreshing = false;
-                        this.removeTokens();
-                        console.log("token not refreshed")
-                        alert("Session Expired: Try to login again")
-                        this.router.navigate(['']);
-                        return throwError(() => new Error('Session expired'));
-                    })
-                );
-            } else {
-                console.log("there is no refresh token in the local storage")
-                this.removeTokens();
-                alert("Session Expired: Try to login again")
-                //this.router.navigate(['']);
-            }
-        }
+    if (!this.isRefreshing) {
+        this.isRefreshing = true;
+        this.refreshTokenSubject.next(null);
 
-        // wait for the token to be refreshed before retrying the request
-        return this.refreshTokenSubject.pipe(
-            filter((token) => token != null),
-            take(1),
-            switchMap((token) => next.handle(this.addTokenToRequest(request, token!)))
+    const refreshToken = this.refreshToken();
+
+    if (refreshToken) {
+      console.log('start refreshing token');
+    
+      const body = { refreshToken };
+    
+      return this.http
+        .post<TokenResponse>(environment.apiUrlService + 'refresh-token', body)
+        .pipe(
+          switchMap((response: any) => {
+            console.log('token refreshed:', response);
+        
+            this.isRefreshing = false;
+            this.saveToken(response.accessToken, response.refreshToken);
+        
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Refresh Token',
+              detail: 'We just refreshed your token'
+            });
+        
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Note',
+              detail: 'Please refresh the page if the data was not received'
+            });
+        
+            return next(this.addTokenToRequest(request, response.accessToken));
+          }),
+          catchError(() => {
+            this.isRefreshing = false;
+            this.removeTokens();
+            console.log('token not refreshed');
+            alert('Session Expired: Try to login again');
+            this.router.navigate(['']);
+            return throwError(() => new Error('Session expired'));
+          })
         );
+    } else {
+      console.log('there is no refresh token in the local storage');
+      this.removeTokens();
+      alert('Session Expired: Try to login again');
     }
+  }
+
+  // wait until refresh completes
+  return this.refreshTokenSubject.pipe(
+    filter(token => token != null),
+    take(1),
+    switchMap(token =>
+      next(this.addTokenToRequest(request, token!))
+    )
+  );
+}
 
     public addTokenToRequest(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
         return request.clone({

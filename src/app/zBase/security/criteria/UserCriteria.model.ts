@@ -1,4 +1,4 @@
-import { UserStatus } from "../../../core/models/enums/UserStatus";
+import { UserStatus } from "../../../core/enums/UserStatus";
 import {BaseCriteria} from "../../criteria/BaseCriteria";
 
 export class UserCriteria extends BaseCriteria {

@@ -5,7 +5,7 @@ import {UserDto} from "../model/userDto.model";
 import {LoginDto} from "../model/loginDto.model";
 import {BaseService} from "../../service/base.service";
 import {UserCriteria} from "../criteria/UserCriteria.model";
-import { UserStatus } from '../../../core/models/enums/UserStatus';
+import { UserStatus } from '../../../core/enums/UserStatus';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import {RoleDto} from "./roleDto.model";
 import {BaseDto} from "../../model/BaseDto";
-import { UserStatus } from "../../../core/models/enums/UserStatus";
+import { UserStatus } from "../../../core/enums/UserStatus";
 
 export class UserDto extends BaseDto {
     public firstName!: string;

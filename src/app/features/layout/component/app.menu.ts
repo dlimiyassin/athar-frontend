@@ -43,7 +43,7 @@ export class AppMenu {
         this.modelAdmin = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/admin/view/dashboard'] }]
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/admin/view/'] }]
             },
             {
                 label: 'Teachers',
@@ -87,7 +87,7 @@ export class AppMenu {
         this.modelTeacher = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/teacher/view/dashboard'] }]
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/teacher/view/'] }]
             },
                         {
                 label: 'Students',
@@ -126,7 +126,7 @@ export class AppMenu {
         this.modelStudent = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/student/view/dashboard'] }]
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/student/view/'] }]
             },
             {
                 label: 'Surveys',
