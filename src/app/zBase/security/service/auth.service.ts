@@ -1,3 +1,4 @@
+import { StudentService } from './../../../core/services/student.service';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
@@ -7,12 +8,16 @@ import {MessageService} from "primeng/api";
 import {environment} from "../../../../environments/environment";
 import {UserDto} from "../model/userDto.model";
 import {RoleDto} from "../model/roleDto.model";
+import { RegisterDto } from '../model/registerDto.model';
+import { LoginDto } from '../model/loginDto.model';
+import { JWTAuthResponse } from '../model/JWTAuthResponse.model';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
+
     // readonly API = 'https://uir-shop.vercel.app/api/v1/';
 
     readonly API = environment.apiUrlService + 'auth/';
@@ -34,6 +39,7 @@ export class AuthService {
     constructor(private http: HttpClient, private tokenService: TokenService,
                 private router: Router,
                 private messageService: MessageService,
+                private studentService: StudentService
     ) {
     }
 
@@ -46,46 +52,53 @@ export class AuthService {
     }
 
     isLoading: boolean = false;
-    public loginAdmin(email: string, password: string) {
-        this.isLoading = true;
-        return new Promise<boolean>((resolve, reject) => {
-            this.http.post<any>(this.API + 'login', {email, password}, {observe: 'response'}).subscribe(
-                {
-                    next : resp => {
-                        this.error = null;
-                        const token = resp.body.accessToken;
-                        const refreshToken = resp.body.refreshToken;
-                        console.log(resp.body)
-                        const tokenDecoded = this.tokenService.decodeToken(token);
-                        const roles = tokenDecoded.roles;
-                        this.rolesSubject.next(roles);
-                        token != null ? this.tokenService.saveToken(token,refreshToken) : false;
-                        this.loadInfos();
-                        if (this.isAdmin) {
-                            this.router.navigate(['/app/admin/view']);
-                            this.isLoading = false;
-                        } else if (this.isStudent) {
-                            this.router.navigate(['/app/student/view']);
-                            this.isLoading = false;
-                        } else if (this.isTeacher) {
-                            this.router.navigate(['/app/teacher/view']);
-                            this.isLoading = false;
-                        }
-                        console.log('you are logged in successfully');
+    public login(loginDto: LoginDto): Observable<JWTAuthResponse> {
+      return this.http.post<JWTAuthResponse>(
+        `${this.API}login`,
+        loginDto
+      );
+    }
+
+        handleAfterLogin(resp: JWTAuthResponse) {         
+            const token = resp.accessToken;
+            const refreshToken = resp.refreshToken;
+            
+            const decoded = this.tokenService.decodeToken(token);
+            const roles = decoded.roles;
+            this.rolesSubject.next(roles);
+            
+            this.tokenService.saveToken(token, refreshToken);
+            this.loadInfos();
+            
+            if (this.isAdmin) {
+              this.router.navigate(['/app/admin/view']);
+            } else if (this.isTeacher) {
+              this.router.navigate(['/app/teacher/view']);
+            }else if (this.isStudent) {
+              //this.router.navigate(['/app/student/view']);
+                  this.studentService.checkStudentProfileSetup().subscribe({
+                    next: (isCompleted : boolean) => {
+                      if (isCompleted) {
+                        console.log('Profile is completed');
+                        this.router.navigate(['/app/student/view']);
+                      } else {
+                        console.log('Profile not completed');
+                        // redirect to setup page
+                        this.router.navigate(['/app/student/view/setup-profile']);
+                      }
                     },
-                    error : (error: HttpErrorResponse) => {
-                        this.error = error.error;
-                        console.log(error);
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error.error.message
-                        });
-                        this.isLoading = false;
+                    error: (err) => {
+                      console.error('Error checking profile setup', err);
                     }
-                }
-            );
-        });
+            });
+            } 
+    }
+
+    public register(registerDto: RegisterDto): Observable<string> {
+      return this.http.post<string>(
+        `${this.API}register`,
+        registerDto
+      );
     }
 
     public loadInfos() {
@@ -95,14 +108,14 @@ export class AuthService {
         const lastName = tokenDecoded.lastName;
         const roles = tokenDecoded.roles;
         const email = tokenDecoded.sub;
-        const numTel = tokenDecoded.numTel;
+        const phoneNumber = tokenDecoded.phoneNumber;
         // this._authenticatedUser.firstName = firstName;
         // this._authenticatedUser.lastName = lastName;
         // this._authenticatedUser.username = username;
         this._authenticatedUser.email = email;
         this._authenticatedUser.roleDtos = roles;
 
-        // this._authenticatedUser.numTel = numTel;
+        // this._authenticatedUser.phoneNumber = phoneNumber;
         localStorage.setItem('autenticated', JSON.stringify(true));
         this.authenticated = true;
         this._loggedIn.next(true);
@@ -115,15 +128,6 @@ export class AuthService {
     //     return index > -1 ? true : false;
     // }
 
-    public registerAdmin() {
-        this.http.post<any>(this.API + 'register', this.user, {observe: 'response'}).subscribe(
-            resp => {
-                this.router.navigate(['/app/admin']);
-            }, (error: HttpErrorResponse) => {
-                console.log(error.error);
-            }
-        );
-    }
 
     public logout() {
         this.tokenService.removeTokens();

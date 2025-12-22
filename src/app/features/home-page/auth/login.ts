@@ -45,7 +45,7 @@ import { StringUtil } from '../../../zBase/utils/StringUtil';
         NgClass
     ],
     template: `
-
+        <p-toast/>
         <div class="bg-surface-50 dark:bg-surface-950 pt-0 md:pt-8 flex items-center justify-center max-h-screen min-w-screen overflow-hidden">
             <div class="flex flex-col items-center justify-center">
                 <div style="border-radius: 56px; padding: 0.2rem 0.2rem 0 0.2rem; background: linear-gradient(180deg, #059669 10%, rgba(33, 150, 243, 0) 30%)">
@@ -187,9 +187,6 @@ export class LoginPage {
     currentYear: number = new Date().getFullYear();
     showPassword: boolean = false;
 
-    togglePasswordVisibility(): void {
-        this.showPassword = !this.showPassword;
-    }
     constructor(
                 public authService: AuthService,
                 private userService: UserService,
@@ -198,38 +195,37 @@ export class LoginPage {
     }
 
 
+    togglePasswordVisibility(): void {
+        this.showPassword = !this.showPassword;
+    }
     login() {
-        console.log("login called");
-        
         this.authService.isLoading = true;
         this.validateForm();
-            if (this.errorMessages.length === 0) {
+        if (this.errorMessages.length === 0) {
                 localStorage.clear();
-                this.authService.loginAdmin(this.loginDto.email, this.loginDto.password)
-                    .then(r => {
-                        this.loginDto = new LoginDto();
-                    })
-                    .catch(r => {
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: 'you are not an admin'
-                        });
-                    })
-            } else {
+            this.authService.login(this.loginDto).subscribe({
+            next: (resp) => {
+                this.authService.handleAfterLogin(resp)
+                this.authService.isLoading = false;
+            },
+            error: (error) => {
+                this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.message
+                });
+                this.authService.isLoading = false;
+            }
+            });
+        } else {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: 'Please correct the errors on the form'
                 });
                 this.authService.isLoading = false;
-            }
-    }
-
-    loginTest() {
-        this.router.navigate(['/app/admin/view']);
-        // re
-    }
+        }
+}
 
     validateForm() {
         this.errorMessages = [];

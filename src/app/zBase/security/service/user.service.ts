@@ -7,6 +7,7 @@ import {BaseService} from "../../service/base.service";
 import {UserCriteria} from "../criteria/UserCriteria.model";
 import { UserStatus } from '../../../core/enums/UserStatus';
 import { environment } from '../../../../environments/environment';
+import { RegisterDto } from '../model/registerDto.model';
 
 @Injectable({
     providedIn: 'root'
@@ -24,6 +25,7 @@ export class UserService extends BaseService {
     private _searchUser: UserCriteria = new UserCriteria();
     private _errorMessages: Array<string> = new Array<string>();
     private _loginDto: LoginDto = new LoginDto();
+    private _registerDto: RegisterDto = new RegisterDto();
 
     private reloadTopbarSource = new Subject<void>();
     reloadTopbar$ = this.reloadTopbarSource.asObservable();
@@ -148,6 +150,14 @@ export class UserService extends BaseService {
 
     set loginDto(value: LoginDto) {
         this._loginDto = value;
+    }
+
+    get registerDto(): RegisterDto{
+        return this._registerDto;
+    }
+
+    set registerDto(value: RegisterDto) {
+        this._registerDto = value;
     }
 
 }

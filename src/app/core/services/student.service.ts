@@ -62,6 +62,10 @@ export class StudentService {
         return this.http.put<StudentDto>(this.API, student);
     }
 
+    checkStudentProfileSetup(): Observable<boolean> {
+        return this.http.get<boolean>(`${this.API}/check-student-setup`);
+    }
+
     // findByCriteria(studentCriteria: StudentCriteria): Observable<Array<StudentDto>> {
     //     return this.http.post<Array<StudentDto>>(this.API + "find-by-criteria", studentCriteria);
     // }

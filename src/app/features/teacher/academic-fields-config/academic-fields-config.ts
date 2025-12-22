@@ -28,6 +28,7 @@ import { FieldType } from '../../../core/enums/field-type.enum';
     CheckboxModule,
     ToastModule,
   ],
+  standalone: true,
   providers: [MessageService],
   templateUrl: './academic-fields-config.html',
   styleUrl: './academic-fields-config.css',
@@ -41,17 +42,7 @@ export class AcademicFieldsConfig implements OnInit {
   fieldDialog = false;
   submitted = false;
   editMode = false;
-
-
   fieldTypeDropdownVisible:boolean = false;
-  toggleFieldTypeDropdown(){
-    this.fieldTypeDropdownVisible = !this.fieldTypeDropdownVisible;
-  }
-
-  setFieldType(fieldType: FieldType){
-    this.field.type = fieldType;
-    this.fieldTypeDropdownVisible = false;
-  }
   fieldTypes : FieldType[] = []
 
   constructor(
@@ -62,6 +53,15 @@ export class AcademicFieldsConfig implements OnInit {
   ngOnInit(): void {
     this.loadFields();
     this.fieldTypes = Object.values(FieldType);
+  }
+
+    toggleFieldTypeDropdown(){
+    this.fieldTypeDropdownVisible = !this.fieldTypeDropdownVisible;
+  }
+
+  setFieldType(fieldType: FieldType){
+    this.field.type = fieldType;
+    this.fieldTypeDropdownVisible = false;
   }
 
   loadFields(): void {
@@ -97,29 +97,29 @@ export class AcademicFieldsConfig implements OnInit {
 
     this.fieldService.save(this.field).subscribe({
       next: (saved: AcademicProfileFieldDto) => {
-        if (this.editMode) {
-          const index = this.fields.findIndex(f => f.name === saved.name);
-          this.fields[index] = saved;
-        } else {
-          this.fields.push(saved);
-        }
-
+        this.loadFields();
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Field saved successfully',
         });
-
         this.fieldDialog = false;
         this.field = {} as AcademicProfileFieldDto;
       },
+      error: (err) => {
+                this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save field',
+        });
+      }
     });
   }
 
   deleteField(field: AcademicProfileFieldDto): void {
     this.fieldService.delete(field).subscribe({
       next : () => {
-        this.fields = this.fields.filter(f => f.name !== field.name);
+        this.loadFields();
       },
       error: () => {
         this.messageService.add({
