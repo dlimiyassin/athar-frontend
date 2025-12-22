@@ -2,9 +2,7 @@ import { DiplomeDto } from "./diplome.dto";
 
 
 export interface AcademicProfileDto {
-  ecole: string;
-  program: string;
-  year: number;
+  currentDiploma: DiplomeDto;
   customAttributes: Record<string, any>;
   diplomes: DiplomeDto[];
 }

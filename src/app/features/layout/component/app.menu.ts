@@ -117,7 +117,7 @@ export class AppMenu {
                     {
                         label: 'Forms',
                         icon: 'pi pi-fw pi-id-card',
-                        routerLink: ['/app/teacher/view/forms']
+                        routerLink: ['/app/teacher/view/form-config']
                     },
                 ]
             }

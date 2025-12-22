@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.ng-invalid.ng-dirty {
+  border-color: #ef4444 !important;
+}

@@ -1,0 +1,170 @@
+<p-toast></p-toast>
+
+<div class="">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Academic Profile Fields
+    </h2>
+
+    <div class="flex gap-2">
+      <button
+        pButton
+        label="New"
+        icon="pi pi-plus"
+        class="p-button-success"
+        (click)="openNew()">
+      </button>
+      <ng-container *ngIf="selectedFields.length">
+        <button
+          pButton
+          label="Delete Selected"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          (click)="deleteSelected()">
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <p-table
+    [value]="fields"
+    [(selection)]="selectedFields"
+    dataKey="name"
+    [tableStyle]="{ 'min-width': '50rem', 'border-radius': '0.75rem', 'overflow': 'hidden' }">
+
+    <ng-template #header>
+      <tr>
+        <th style="width: 4rem">
+          <p-tableHeaderCheckbox />
+        </th>
+        <th>Name</th>
+        <th>Label</th>
+        <th>Type</th>
+        <th>Required</th>
+        <th style="width: 8rem">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-field>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="field" />
+        </td>
+        <td>{{ field.name }}</td>
+        <td>{{ field.label }}</td>
+        <td>
+          <span class="px-2 py-1 rounded bg-gray-100 text-sm">
+            {{ field.type }}
+          </span>
+        </td>
+        <td>
+          <i
+            class="pi"
+            [ngClass]="field.required ? 'pi-check-circle text-green-500' : 'pi-times-circle text-red-400'">
+          </i>
+        </td>
+        <td class="flex gap-2">
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-text p-button-sm"
+            (click)="editField(field)">
+          </button>
+
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger p-button-sm"
+            (click)="deleteField(field)">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Dialog -->
+<p-dialog
+  [(visible)]="fieldDialog"
+  header="Academic Field"
+  [modal]="true"
+    [style]="{ width: '450px', 'height': '50vh' }"
+    [contentStyle]="{ 'overflow': 'visible' }"
+  class="p-fluid">
+
+  <div class="space-y-4">
+
+    <div>
+      <label class="font-medium">Name</label>
+      <input
+        pInputText
+        [(ngModel)]="field.name"
+        class="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !field.name }"/>
+    </div>
+
+    <div>
+      <label class="font-medium">Label</label>
+      <input
+        pInputText
+        [(ngModel)]="field.label"
+        class="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !field.label }"/>
+    </div>
+
+    <div class="flex flex-row gap-2 items-center">
+      
+      <div class="relative">
+
+            <button (click)="toggleFieldTypeDropdown()" class="font-medium border rounded-2xl p-2">Type +</button>
+            <!-- Field Type Dropdown Menu -->
+            <ul *ngIf="fieldTypeDropdownVisible" class="absolute left-4 mt-0 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+            @for (fieldType of fieldTypes; track $index) {
+              <li class="cursor-pointer px-4 py-2 hover:text-white hover:bg-gray-600" (click)="setFieldType(fieldType)">{{ fieldType }}</li>
+            }
+            </ul>
+        </div>
+      <p *ngIf="field.type"  class="p-2 bg-green-200 rounded-l-md">{{ field.type }}</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p-checkbox [(ngModel)]="field.required" binary="true" />
+      <label>Required</label>
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancel"
+      class="p-button-text"
+      (click)="hideDialog()">
+    </button>
+    <button
+      pButton
+      label="Save"
+      class="p-button-success"
+      (click)="saveField()">
+    </button>
+  </ng-template>
+
+</p-dialog>
