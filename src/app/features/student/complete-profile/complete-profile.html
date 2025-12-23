@@ -1,29 +1,182 @@
-<div class="flex flex-row justify-between w-full">
-    <button class="py-2 px-4 rounded bg-[#10b981] text-white" (click)="goToPrevouisStep()">prev</button>
-    <button class="py-2 px-4 rounded bg-[#10b981] text-white" (click)="goToNextStep()">next</button>
+<div class="flex justify-between mb-6">
+  <button
+    class="px-4 py-2 rounded bg-gray-200"
+    (click)="goToPreviousStep()">
+    Previous
+  </button>
+
+
+  <button
+       class="px-4 py-2 rounded bg-emerald-500 text-white"
+       (click)="goToNextStep()">
+      
+      @if (currentStep !== 3) {
+          next
+        } 
+      @else { 
+          @if (!isLoading) { 
+                save
+            } 
+          @else { 
+              <ng-container>
+                   <div class="spinner mr-2"></div>
+               </ng-container>
+            } 
+        }
+
+   </button>
 </div>
+
 @switch (currentStep) {
-    
-  @case (1) {
-    <div>
-        Academic Background
-    </div>
-  }
+
+  <!-- STEP 2 -->
   @case (2) {
-    <div>
-        Academic Background
+    <div class="space-y-8">
+
+      <!-- Current Diploma -->
+      <div>
+        <h3 class="font-semibold mb-3">Current Diploma</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <p-select
+            [options]="universites"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="University"
+            [(ngModel)]="academicProfile.currentDiploma.universite">
+          </p-select>
+
+          <input pInputText placeholder="School"
+                 [(ngModel)]="academicProfile.currentDiploma.ecole" />
+
+          <p-select
+            [options]="niveaux"
+            placeholder="Level"
+            [(ngModel)]="academicProfile.currentDiploma.niveauEtude">
+          </p-select>
+
+          <input pInputText placeholder="Field of Study"
+                 [(ngModel)]="academicProfile.currentDiploma.filiere" />
+
+          <input pInputText placeholder="Diploma Title"
+                 [(ngModel)]="academicProfile.currentDiploma.intitule" />
+
+          <p-inputNumber placeholder="Year"
+                         [(ngModel)]="academicProfile.currentDiploma.year">
+          </p-inputNumber>
+
+          <p-inputNumber placeholder="Grade"
+                         [(ngModel)]="academicProfile.currentDiploma.note">
+          </p-inputNumber>
+        </div>
+      </div>
+
+      <!-- Obtained Diplomas -->
+      <div>
+        <h3 class="font-semibold mb-3">Obtained Diplomas</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <p-select
+            [options]="universites"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="University"
+            [(ngModel)]="diplomaForm.universite">
+          </p-select>
+
+          <input pInputText placeholder="School"
+                 [(ngModel)]="diplomaForm.ecole" />
+
+          <p-select
+            [options]="niveaux"
+            placeholder="Level"
+            [(ngModel)]="diplomaForm.niveauEtude">
+          </p-select>
+
+          <input pInputText placeholder="Field"
+                 [(ngModel)]="diplomaForm.filiere" />
+
+          <input pInputText placeholder="Title"
+                 [(ngModel)]="diplomaForm.intitule" />
+        </div>
+
+        <button
+          class="px-4 py-2 bg-blue-500 text-white rounded"
+          (click)="addDiploma()">
+          Add Diploma
+        </button>
+
+        <p-table
+          class="mt-4"
+          [value]="academicProfile.diplomes">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th>University</th>
+              <th>Level</th>
+              <th>Title</th>
+              <th></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-d let-i="rowIndex">
+            <tr>
+              <td>{{ d.universite }}</td>
+              <td>{{ d.niveauEtude }}</td>
+              <td>{{ d.intitule }}</td>
+              <td>
+                <button
+                  class="text-red-500"
+                  (click)="removeDiploma(i)">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+      </div>
     </div>
   }
+
+  <!-- STEP 3 -->
   @case (3) {
-    <div>
-        Finishing
+    <div class="space-y-6">
+      <h3 class="font-semibold">Additional Academic Information</h3>
+
+      @for (field of academicFields; track field.id) {
+        <div class="flex flex-row justify-between items-center space-y-1 space-x-3 w-full md:w-[50%]">
+          <label class="text-sm font-medium">{{ field.label }}</label>
+
+          @switch (field.type) {
+
+            @case (fieldType.TEXT) {
+              <input pInputText
+                     [(ngModel)]="academicProfile.customAttributes[field.name]" />
+            }
+
+            @case (fieldType.NUMBER) {
+              <p-inputNumber
+                [(ngModel)]="academicProfile.customAttributes[field.name]">
+              </p-inputNumber>
+            }
+
+            @case (fieldType.BOOLEAN) {
+              <p-checkbox
+                binary="true"
+                class="ms-0"
+                [(ngModel)]="academicProfile.customAttributes[field.name]">
+              </p-checkbox>
+            }
+
+            @case (fieldType.DATE) {
+              <p-datepicker
+                [(ngModel)]="academicProfile.customAttributes[field.name]">
+              </p-datepicker>
+            }
+          }
+        </div>
+      }
     </div>
   }
-  
-  @default {
-    current step : {{currentStep}}
-  }
-
-    
 }
-

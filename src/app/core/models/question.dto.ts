@@ -1,8 +1,8 @@
 import { QuestionType } from '../enums/question-type.enum';
 
-export interface QuestionDto {
-  id: string;
-  type: QuestionType;
-  label: string;
-  options: string[];
+export class QuestionDto {
+  id!: string;
+  type!: QuestionType  | null;;
+  label!: string;
+  options!: string[];
 }

@@ -33,7 +33,8 @@ import { StringUtil } from '../../../zBase/utils/StringUtil';
           }
       
     `],
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, ToastModule,
+    imports: [
+        ToastModule,
         FormsModule,
         PasswordModule,
         CheckboxModule,

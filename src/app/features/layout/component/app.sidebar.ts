@@ -53,29 +53,29 @@ import { TimelineModule } from 'primeng/timeline';
             </div> 
         } @else { 
             <div class="layout-progress-sidebar">
-<p-timeline [value]="steps" align="left">
+            <p-timeline [value]="steps" align="left">
 
-    <ng-template #marker let-step>
-        <span
-            class="timeline-marker"
-            [ngStyle]="{
-                backgroundColor: getColor(step),
-                color: 'white'
-            }">
-            <i [class]="getIcon(step)"></i>
-        </span>
-    </ng-template>
+                <ng-template #marker let-step>
+                    <span
+                        class="timeline-marker"
+                        [ngStyle]="{
+                            backgroundColor: getColor(step),
+                            color: 'white'
+                        }">
+                        <i [class]="getIcon(step)"></i>
+                    </span>
+                </ng-template>
+                    
+                <ng-template #content let-step>
+                    <span class="text-xs"
+                          [class.completed]="isCompleted(step)">
+                        {{ step.label }}
+                    </span>
+                </ng-template>
 
-    <ng-template #content let-step>
-        <span class="text-xs"
-              [class.completed]="isCompleted(step)">
-            {{ step.label }}
-        </span>
-    </ng-template>
+            </p-timeline>
 
-</p-timeline>
-
-</div>
+            </div>
             
         }
 
@@ -101,7 +101,7 @@ ngOnInit(): void {
     this.steps = [
         { index: 1, label: 'Account Creation' },
         { index: 2, label: 'Academic Background' },
-        { index: 3, label: 'Finishing' }
+        { index: 3, label: 'Additional Information' }
     ];
 
     this.currentStep = this.studentService._currentStep.getValue();

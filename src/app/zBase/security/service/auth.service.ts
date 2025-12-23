@@ -59,7 +59,7 @@ export class AuthService {
       );
     }
 
-        handleAfterLogin(resp: JWTAuthResponse) {         
+    handleAfterLogin(resp: JWTAuthResponse) {         
             const token = resp.accessToken;
             const refreshToken = resp.refreshToken;
             
@@ -70,7 +70,7 @@ export class AuthService {
             this.tokenService.saveToken(token, refreshToken);
             this.loadInfos();
             this.studentService.setProfileSetup(false);
-            this.studentService.setCurrentStep(1);
+            this.studentService.setCurrentStep(2);
 
             if (this.isStudent) {
               //this.router.navigate(['/app/student/view']);

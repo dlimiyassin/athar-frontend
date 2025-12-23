@@ -82,6 +82,11 @@ export class StudentService {
         return this.http.post<StudentDto>(this.API, student);
     }
 
+    public completeProfile(student: StudentDto): Observable<StudentDto> {
+        return this.http.post<StudentDto>(this.API + "/complete-profile", student);
+    }
+
+
     public findById(id: string) {
         return this.http.get<StudentDto>(this.API + "id/" + id);
     }

@@ -1,5 +1,5 @@
-export interface AnswerDto {
-  questionId: string;
-  value: string;
+export class AnswerDto {
+  questionId!: string;
+  value!: string;
 }
 
