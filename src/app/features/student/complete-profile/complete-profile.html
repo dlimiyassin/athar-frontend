@@ -1,1 +1,29 @@
-<p>complete-profile works!</p>
+<div class="flex flex-row justify-between w-full">
+    <button class="py-2 px-4 rounded bg-[#10b981] text-white" (click)="goToPrevouisStep()">prev</button>
+    <button class="py-2 px-4 rounded bg-[#10b981] text-white" (click)="goToNextStep()">next</button>
+</div>
+@switch (currentStep) {
+    
+  @case (1) {
+    <div>
+        Academic Background
+    </div>
+  }
+  @case (2) {
+    <div>
+        Academic Background
+    </div>
+  }
+  @case (3) {
+    <div>
+        Finishing
+    </div>
+  }
+  
+  @default {
+    current step : {{currentStep}}
+  }
+
+    
+}
+

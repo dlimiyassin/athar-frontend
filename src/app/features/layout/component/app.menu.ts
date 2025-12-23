@@ -1,20 +1,35 @@
+import { CardModule } from 'primeng/card';
+import { TimelineModule } from 'primeng/timeline';
+import { StudentService } from './../../../core/services/student.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { AuthService } from '../../../zBase/security/service/auth.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-menu',
     standalone: true,
     imports: [CommonModule, AppMenuitem, RouterModule],
-    template: `<ul class="layout-menu">
-        <ng-container *ngFor="let item of model; let i = index">
-            <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
-            <li *ngIf="item.separator" class="menu-separator"></li>
-        </ng-container>
-    </ul> `
+    template: `
+            <ul class="layout-menu">
+                <ng-container>
+                    <ng-container *ngFor="let item of model; let i = index">
+                        <li app-menuitem
+                            *ngIf="!item.separator"
+                            [item]="item"
+                            [index]="i"
+                            [root]="true">
+                        </li>
+
+                        <li *ngIf="item.separator" class="menu-separator"></li>
+                    </ng-container>
+                </ng-container>
+            </ul>
+
+    `
 })
 export class AppMenu {
     model: MenuItem[] = [];
@@ -23,14 +38,17 @@ export class AppMenu {
     modelStudent: MenuItem[] = [];
 
 
-    constructor( private authService: AuthService) {
+
+    constructor( private authService: AuthService, private studentService: StudentService) {
         this.initializeMenu()
     }
 
     ngOnInit() {
-        this.authService.loadInfos();
+       
         this.checkAuthentication();
         this.initializeMenu();
+
+
     }
 
         checkAuthentication() {

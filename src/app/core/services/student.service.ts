@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StudentDto } from '../models/student.dto';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginDto } from '../../zBase/security/model/loginDto.model';
 
@@ -14,16 +14,52 @@ export class StudentService {
     readonly API = environment.apiUrlService + "students";
     private _students: StudentDto[] = [];
     private _selectedStudents: StudentDto[] = [];
-    private _studentDialog: boolean = false;
     private _student!: StudentDto;
-    private _submitted!: boolean;
     private _selectedStudent!: StudentDto;
     //private _searchStudent: StudentCriteria = new StudentCriteria();
     private _errorMessages: Array<string> = new Array<string>();
     private _loginDto: LoginDto = new LoginDto();
-
     private reloadTopbarSource = new Subject<void>();
     reloadTopbar$ = this.reloadTopbarSource.asObservable();
+    private _studentDialog: boolean = false;
+    private _submitted!: boolean;
+
+
+    // isSetupProfile
+    private readonly STORAGE_KEY_SETUP = 'isSetupProfile';
+    public _isSetupProfile = new BehaviorSubject<boolean>(
+      JSON.parse(localStorage.getItem(this.STORAGE_KEY_SETUP) ?? 'false')
+    );
+    public isSetupProfile$ = this._isSetupProfile.asObservable();
+
+    setProfileSetup(value: boolean): void {
+      this._isSetupProfile.next(value);
+      localStorage.setItem(this.STORAGE_KEY_SETUP, JSON.stringify(value));
+    }
+    
+    clearProfileSetup(): void {
+      this._isSetupProfile.next(false);
+      localStorage.removeItem(this.STORAGE_KEY_SETUP);
+    }
+
+
+    // steps logic
+    private readonly STORAGE_KEY_STEP = 'currentStep';
+    public _currentStep = new BehaviorSubject<number>(
+      JSON.parse(localStorage.getItem(this.STORAGE_KEY_STEP) ?? '2')
+    );
+    public currentStep$ = this._currentStep.asObservable();
+
+    setCurrentStep(value: number): void {
+      this._currentStep.next(value);
+      localStorage.setItem(this.STORAGE_KEY_STEP, JSON.stringify(value));
+    }
+    
+    clearCurrentStep(): void {
+      this._currentStep.next(2);
+      localStorage.removeItem(this.STORAGE_KEY_STEP);
+    }
+
 
     triggerReloadTopbar() {
         this.reloadTopbarSource.next();

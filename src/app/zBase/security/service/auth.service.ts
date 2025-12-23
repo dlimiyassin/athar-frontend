@@ -69,21 +69,18 @@ export class AuthService {
             
             this.tokenService.saveToken(token, refreshToken);
             this.loadInfos();
-            
-            if (this.isAdmin) {
-              this.router.navigate(['/app/admin/view']);
-            } else if (this.isTeacher) {
-              this.router.navigate(['/app/teacher/view']);
-            }else if (this.isStudent) {
+            this.studentService.setProfileSetup(false);
+            this.studentService.setCurrentStep(1);
+
+            if (this.isStudent) {
               //this.router.navigate(['/app/student/view']);
                   this.studentService.checkStudentProfileSetup().subscribe({
                     next: (isCompleted : boolean) => {
                       if (isCompleted) {
-                        console.log('Profile is completed');
+                        this.studentService.setProfileSetup(false);
                         this.router.navigate(['/app/student/view']);
                       } else {
-                        console.log('Profile not completed');
-                        // redirect to setup page
+                        this.studentService.setProfileSetup(true);
                         this.router.navigate(['/app/student/view/setup-profile']);
                       }
                     },
@@ -91,7 +88,11 @@ export class AuthService {
                       console.error('Error checking profile setup', err);
                     }
             });
-            } 
+            } else if (this.isAdmin) {
+              this.router.navigate(['/app/admin/view']);
+            } else if (this.isTeacher) {
+              this.router.navigate(['/app/teacher/view']);
+            }
     }
 
     public register(registerDto: RegisterDto): Observable<string> {
@@ -120,6 +121,7 @@ export class AuthService {
         this.authenticated = true;
         this._loggedIn.next(true);
 
+
     }
 
 
@@ -142,6 +144,10 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
         localStorage.clear();
         console.log('You are logged out successfully');
+        this.studentService.clearProfileSetup();
+        console.log("==========================================");
+        console.log(this.studentService._isSetupProfile.getValue());
+        
     }
 
     get user(): UserDto {
