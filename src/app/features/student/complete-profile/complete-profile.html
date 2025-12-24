@@ -1,3 +1,4 @@
+<p-toast/>
 <div class="flex justify-between mb-6">
   <button
     class="px-4 py-2 rounded bg-gray-200"
@@ -61,7 +62,7 @@
           <input pInputText placeholder="Diploma Title"
                  [(ngModel)]="academicProfile.currentDiploma.intitule" />
 
-          <p-inputNumber placeholder="Year"
+          <p-inputNumber mode="decimal" [useGrouping]="false" placeholder="Year"
                          [(ngModel)]="academicProfile.currentDiploma.year">
           </p-inputNumber>
 
