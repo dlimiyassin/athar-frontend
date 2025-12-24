@@ -97,6 +97,15 @@ export class AppSidebar {
 
 ngOnInit(): void {
     this.isCompleteProfile = this.studentService._isSetupProfile.getValue();
+    this.studentService.isSetupProfile$.subscribe(value => {
+        this.isCompleteProfile = value;
+    });
+    
+    this.currentStep = this.studentService._currentStep.getValue();
+    this.studentService.currentStep$.subscribe(value => {
+        this.currentStep = value;
+    });
+
     this.authService.loadInfos();
     this.steps = [
         { index: 1, label: 'Account Creation' },
@@ -104,10 +113,7 @@ ngOnInit(): void {
         { index: 3, label: 'Additional Information' }
     ];
 
-    this.currentStep = this.studentService._currentStep.getValue();
-    this.studentService.currentStep$.subscribe(value => {
-        this.currentStep = value;
-    });
+
 }
 
 getColor(step: TimelineStep): string {

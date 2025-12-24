@@ -139,12 +139,12 @@ export class CompleteProfile implements OnInit {
   saveStudentProfile(): void {
     console.log('Student profile saved:', this.academicProfile);
     this.isLoading = true;
-    this.studentService.setProfileSetup(true);
     this.studentDto.academicProfile = this.academicProfile;
     this.studentService.completeProfile(this.studentDto).subscribe({
       next: (response : StudentDto) => {
         console.log('Student profile saved successfully:', response);
         this.isLoading = false;
+        this.studentService.setProfileSetup(false);
       },
       error: (err: any) => {
         console.error('Error saving student profile:', err);

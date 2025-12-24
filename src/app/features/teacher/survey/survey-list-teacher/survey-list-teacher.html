@@ -1,1 +1,78 @@
-<p>survey-list-teacher works!</p>
+<div class="space-y-6">
+  
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+
+  <h2 class="text-2xl font-semibold">Surveys</h2>
+
+  <p-table
+    [value]="surveys"
+    [loading]="loading"
+    class="shadow rounded-2xl"
+    [paginator]="true"
+    [rows]="5"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Target</th>
+        <th>Created At</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-survey>
+      <tr>
+        <td class="font-medium">{{ survey.title }}</td>
+
+        <td class="text-gray-600">
+          {{ survey.description || '-' }}
+        </td>
+
+        <td>
+          <span class="px-2 py-1 bg-gray-100 rounded">
+            {{ survey.target || '—' }}
+          </span>
+        </td>
+
+        <td>
+          {{ survey.createdAt | date:'medium' }}
+        </td>
+
+        <td class="flex gap-2 justify-center">
+          <button
+            pButton
+            icon="pi pi-eye"
+            class="p-button-text"
+            (click)="onView(survey)"
+            pTooltip="View Survey"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty state -->
+    @if (!loading) {
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center py-8 text-gray-500">
+            No surveys found. Create your first survey to get started.
+          </td>
+        </tr>
+      </ng-template>
+    }
+  </p-table>
+
+  <!-- Create button if needed -->
+  <div class="flex justify-end">
+    <button
+      pButton
+      icon="pi pi-plus"
+      label="Create Survey"
+      (click)="router.navigate(['/teacher/surveys/create'])"
+      class="p-button-primary"
+    ></button>
+  </div>
+
+</div>

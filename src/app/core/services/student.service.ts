@@ -16,13 +16,11 @@ export class StudentService {
     private _selectedStudents: StudentDto[] = [];
     private _student!: StudentDto;
     private _selectedStudent!: StudentDto;
-    //private _searchStudent: StudentCriteria = new StudentCriteria();
     private _errorMessages: Array<string> = new Array<string>();
     private _loginDto: LoginDto = new LoginDto();
     private reloadTopbarSource = new Subject<void>();
     reloadTopbar$ = this.reloadTopbarSource.asObservable();
-    private _studentDialog: boolean = false;
-    private _submitted!: boolean;
+
 
 
     // isSetupProfile
@@ -68,8 +66,6 @@ export class StudentService {
     constructor(private http: HttpClient) {
         this._students = [];
         this._selectedStudents = [];
-        this._studentDialog = false;
-        this._submitted = false;
         this._errorMessages = [];
     }
 
