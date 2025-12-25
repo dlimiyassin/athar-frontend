@@ -3,7 +3,16 @@
   <!-- Toast for notifications -->
   <p-toast></p-toast>
 
-  <h2 class="text-2xl font-semibold">Surveys</h2>
+  <div class="flex flex-row justify-between items-start">
+    <h2 class="text-2xl font-semibold">Surveys</h2>
+    <button
+      pButton
+      icon="pi pi-plus"
+      label="Create Survey"
+      (click)="router.navigate(['/teacher/surveys/create'])"
+      class="p-button-primary"
+    ></button>
+  </div>
 
   <p-table
     [value]="surveys"
@@ -63,16 +72,4 @@
       </ng-template>
     }
   </p-table>
-
-  <!-- Create button if needed -->
-  <div class="flex justify-end">
-    <button
-      pButton
-      icon="pi pi-plus"
-      label="Create Survey"
-      (click)="router.navigate(['/teacher/surveys/create'])"
-      class="p-button-primary"
-    ></button>
-  </div>
-
 </div>

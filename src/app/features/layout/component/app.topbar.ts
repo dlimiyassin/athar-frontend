@@ -11,7 +11,8 @@ import { AuthService } from '../../../zBase/security/service/auth.service';
     selector: 'app-topbar',
     standalone: true,
     imports: [RouterModule, CommonModule, StyleClassModule],
-    template: ` <div style="padding: 1rem;" class="layout-topbar">
+    template: ` 
+    <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
                 <i class="pi pi-bars"></i>
