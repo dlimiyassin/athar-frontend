@@ -3,7 +3,18 @@
   
     <!-- Survey Info -->
     <section class="bg-white rounded-2xl shadow p-6 space-y-4">
-      <h2 class="text-xl font-semibold">Survey Information</h2>
+      <div class="flex flex-row justify-between items-start">
+        <h2 class="text-xl font-semibold">Survey Information</h2>
+        <button
+          pButton
+          icon="pi pi-save"
+          label="Save"
+          size="large"
+          [rounded]="true" 
+          (click)="saveSurvey()">
+        </button>
+
+      </div>
   
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
   
@@ -35,14 +46,6 @@
         </div>
   
       </div>
-  
-      <button
-        pButton
-        label="Save Survey"
-        icon="pi pi-check"
-        class="mt-4"
-        (click)="saveSurvey()">
-      </button>
     </section>
   
     <!-- Questions -->
@@ -54,7 +57,7 @@
         @for (q of survey.questions; track $index) {
           
           <p-accordion-panel [value]="$index">
-            <p-accordion-header>{{'Question ' + ($index + 1)}}</p-accordion-header>
+            <p-accordion-header><h4 class="font-medium text-sm">{{'Question ' + ($index + 1)}}</h4></p-accordion-header>
             
             <!-- Question Table -->
               <p-accordion-content>
@@ -85,52 +88,52 @@
                   </tr>
                 </ng-template>
               </p-table>
+              <!-- Options Table -->
+               @if (isOptionsBased(q.type)) {
+                 <div class="space-y-3">
+         
+                   <h5 class="font-medium text-sm">Options</h5>
+         
+                   <p-table [value]="q.options" [rowTrackBy]="trackByIndex">
+                     <ng-template pTemplate="header">
+                       <tr>
+                         <th>Value</th>
+                         <th style="width: 4rem"></th>
+                       </tr>
+                     </ng-template>
+         
+                     <ng-template pTemplate="body" let-option let-rowIndex="rowIndex">
+                       <tr>
+                         <td>
+                           <input
+                             pInputText
+                             [(ngModel)]="q.options[rowIndex]"
+                             class="w-full" />
+                         </td>
+                         <td>
+                           <button
+                             pButton
+                             icon="pi pi-trash"
+                             class="p-button-text p-button-danger"
+                             (click)="removeOption(q, rowIndex)">
+                           </button>
+                         </td>
+                       </tr>
+                     </ng-template>
+                   </p-table>
+         
+                   <button
+                     pButton
+                     icon="pi pi-plus"
+                     label="Add Option"
+                     class="p-button-sm mt-2"
+                     (click)="addOption(q)">
+                   </button>
+         
+                 </div>
+               }
               </p-accordion-content>
     
-            <!-- Options Table -->
-             @if (isOptionsBased(q.type)) {
-               <div class="space-y-3">
-       
-                 <h4 class="font-medium text-sm">Options</h4>
-       
-                 <p-table [value]="q.options">
-                   <ng-template pTemplate="header">
-                     <tr>
-                       <th>Value</th>
-                       <th style="width: 4rem"></th>
-                     </tr>
-                   </ng-template>
-       
-                   <ng-template pTemplate="body" let-option let-rowIndex="rowIndex">
-                     <tr>
-                       <td>
-                         <input
-                           pInputText
-                           [(ngModel)]="q.options[rowIndex]"
-                           class="w-full" />
-                       </td>
-                       <td>
-                         <button
-                           pButton
-                           icon="pi pi-trash"
-                           class="p-button-text p-button-danger"
-                           (click)="removeOption(q, rowIndex)">
-                         </button>
-                       </td>
-                     </tr>
-                   </ng-template>
-                 </p-table>
-       
-                 <button
-                   pButton
-                   icon="pi pi-plus"
-                   label="Add Option"
-                   class="p-button-sm mt-2"
-                   (click)="addOption(q)">
-                 </button>
-       
-               </div>
-             }
           </p-accordion-panel>          
           
         }

@@ -15,6 +15,7 @@ import { QuestionType } from '../../../../core/enums/question-type.enum';
 import { TargetType } from '../../../../core/enums/target-type.enum';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SelectModule } from 'primeng/select';
+import { StyleClass } from "primeng/styleclass";
 
 @Component({
   selector: 'app-view-survey',
@@ -30,8 +31,8 @@ import { SelectModule } from 'primeng/select';
     AccordionHeader,
     AccordionContent,
     SelectButtonModule,
-    SelectModule
-  ],
+    SelectModule,
+],
   templateUrl: './view-survey.html'
 })
 export class ViewSurvey implements OnInit {
@@ -71,6 +72,14 @@ export class ViewSurvey implements OnInit {
   }
 
   saveSurvey(): void {
+  
+    this.survey.questions?.forEach(q => {
+    q.label = q.label?.trim() ?? '';
+      if (q.options) {
+        q.options = q.options.map(opt => opt?.trim() ?? '');
+      }
+    });
+
     this.surveyService.update(this.survey).subscribe({
       next: updated => {
         this.survey = updated;
@@ -86,8 +95,13 @@ export class ViewSurvey implements OnInit {
   }
 
   addOption(question: QuestionDto): void {
-    question.options.push('');
+    question.options = [...question.options, ' '];
   }
+  
+  trackByIndex(index: number, item: any): number {
+  return index;
+  }
+
 
   removeOption(question: QuestionDto, index: number): void {
     question.options.splice(index, 1);
