@@ -1,3 +1,4 @@
+<p-toast />
 @if (!loading) {
   <div class="space-y-8">
   
@@ -50,8 +51,78 @@
   
     <!-- Questions -->
     <section class="bg-white rounded-2xl shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">Questions</h2>
+        
+      <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Questions</h2>
+
+            <button
+              pButton
+              label="{{showNewQuestionForm ? 'Save Question' : 'Add New Question'}}"
+              [icon]="showNewQuestionForm ? 'pi pi-check' : 'pi pi-plus'"
+              class=" p-button-rounded p-button-text"
+              (click)="toggleQuestionForm()">
+            </button>
+        </div>
+
+        @if (showNewQuestionForm) {
+          <div class="mb-6 border rounded-lg p-4 space-y-4">
+            <div>
+              <label class="text-md font-medium">Label</label>
+              <input
+                pInputText
+                [(ngModel)]="newQuestion.label"
+                class="w-full mt-1" />
+            </div>
+          
+            <div>
+              <label class="text-md font-medium">Type</label>
+              <p-select
+                [options]="questionTypes"
+                [(ngModel)]="newQuestion.type"
+                class="w-full mt-1">
+              </p-select>
+            </div>
+          
+            @if (isOptionsBased(newQuestion.type)) {
+              <div class="space-y-2">
+                <label class="text-sm font-medium me-2">Options</label>
+              
+                @for (opt of newQuestion.options; track $index) {
+                  <div class="flex gap-2">
+                    <input
+                      pInputText
+                      [(ngModel)]="newQuestion.options[$index]"
+                      class="flex-1" />
+                  
+                    <button
+                      pButton
+                      icon="pi pi-trash"
+                      class="p-button-text p-button-danger"
+                      (click)="newQuestion.options.splice($index, 1)">
+                    </button>
+                  </div>
+                }
+              
+                <button
+                  pButton
+                  icon="pi pi-plus"
+                  label="Add Option"
+                  class="p-button-sm"
+                  (click)="newQuestion.options.push('')">
+                </button>
+              </div>
+            }
+          </div>
+        }
   
+
+
+
+
+
+
+
+      <!-- Questions Accordion -->
       <p-accordion [multiple]="true">
   
         @for (q of survey.questions; track $index) {
@@ -60,12 +131,12 @@
             <p-accordion-header><h4 class="font-medium text-sm">{{'Question ' + ($index + 1)}}</h4></p-accordion-header>
             
             <!-- Question Table -->
-              <p-accordion-content>
-                        <p-table [value]="[q]" class="mb-6">
+              <p-accordion-content class="ps-14">
+                <p-table [value]="[q]" class="mb-6">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Label</th>
-                    <th>Type</th>
+                    <th class="text-xl font-medium">Label</th>
+                    <th class="text-xl font-medium">Type</th>
                   </tr>
                 </ng-template>
     
@@ -88,11 +159,20 @@
                   </tr>
                 </ng-template>
               </p-table>
+
               <!-- Options Table -->
                @if (isOptionsBased(q.type)) {
-                 <div class="space-y-3">
-         
-                   <h5 class="font-medium text-sm">Options</h5>
+              <div class="space-y-3">
+                  <div class="flex flex-row justify-between items-center">
+                    <p class="ps-4 font-bold text-xl">Options</p>
+                    <button
+                      pButton
+                      icon="pi pi-plus"
+                      label="Add Option"
+                      class="p-button-sm"
+                      (click)="addOption(q)">
+                    </button>
+                  </div>
          
                    <p-table [value]="q.options" [rowTrackBy]="trackByIndex">
                      <ng-template pTemplate="header">
@@ -121,17 +201,8 @@
                        </tr>
                      </ng-template>
                    </p-table>
-         
-                   <button
-                     pButton
-                     icon="pi pi-plus"
-                     label="Add Option"
-                     class="p-button-sm mt-2"
-                     (click)="addOption(q)">
-                   </button>
-         
-                 </div>
-               }
+              </div>
+            }
               </p-accordion-content>
     
           </p-accordion-panel>          

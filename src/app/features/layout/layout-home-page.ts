@@ -16,12 +16,12 @@ template: `
     <div id="home" class="landing-wrapper">
       
       <div class="layout-topbar bg-white bg-surface-0 dark:bg-surface-900">
-        <topbar-widget
-          class="layout-topbar"
-        />
+        <topbar-widget style="padding: 3rem;" class="layout-topbar"/>
       </div>
 
-      <router-outlet></router-outlet>
+      <div style="margin-top: 6rem;">
+        <router-outlet></router-outlet>
+      </div>
       
       <footer-widget />
     </div>

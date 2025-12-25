@@ -16,6 +16,8 @@ import { TargetType } from '../../../../core/enums/target-type.enum';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SelectModule } from 'primeng/select';
 import { StyleClass } from "primeng/styleclass";
+import { MessageService } from 'primeng/api';
+import { Toast } from "primeng/toast";
 
 @Component({
   selector: 'app-view-survey',
@@ -32,13 +34,15 @@ import { StyleClass } from "primeng/styleclass";
     AccordionContent,
     SelectButtonModule,
     SelectModule,
+    Toast
 ],
   templateUrl: './view-survey.html'
 })
 export class ViewSurvey implements OnInit {
 
   survey!: SurveyDto;
-
+  showNewQuestionForm = false;
+  newQuestion: QuestionDto = this.createEmptyQuestion();
   readonly questionTypes = Object.values(QuestionType);
   readonly targetTypes = Object.values(TargetType);
 
@@ -46,7 +50,8 @@ export class ViewSurvey implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private surveyService: SurveyService
+    private surveyService: SurveyService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +88,11 @@ export class ViewSurvey implements OnInit {
     this.surveyService.update(this.survey).subscribe({
       next: updated => {
         this.survey = updated;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Survey updated',
+          detail: 'The survey has been successfully updated.'
+        });
       },
       error: err => {
         console.error('Failed to save survey', err);
@@ -90,13 +100,81 @@ export class ViewSurvey implements OnInit {
     });
   }
 
+  private generateUUID(): string {
+    return crypto.randomUUID();
+  }
+
+  private createEmptyQuestion(): QuestionDto {
+    return {
+      id: this.generateUUID(),
+      label: '',
+      type: null,
+      options: []
+    };
+  }
+
+  toggleQuestionForm(): void {
+    if (this.showNewQuestionForm) {
+      this.saveNewQuestion();
+    } else {
+      this.newQuestion = this.createEmptyQuestion();
+      this.showNewQuestionForm = true;
+    }
+  }
+
+  private saveNewQuestion(): void {
+    if (!this.newQuestion.label || !this.newQuestion.type) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Invalid question',
+          detail: 'Label and type are required'
+        });
+        return;
+      }
+
+    this.survey.questions = [...this.survey.questions, this.newQuestion];
+
+    this.surveyService.update(this.survey).subscribe({
+      next: updatedSurvey => {
+        this.survey = updatedSurvey;
+        this.showNewQuestionForm = false;
+        this.newQuestion = this.createEmptyQuestion();
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Question added',
+          detail: 'The question has been saved successfully'
+        });
+      },
+      error: err => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to add question'
+        });
+      }
+    });
+  }
+
+
+
+
+
+
+
+
   isOptionsBased(type: QuestionType | null): boolean {
     return type === QuestionType.CHOICE || type === QuestionType.SCALE;
   }
 
   addOption(question: QuestionDto): void {
+    if (!question.options) {
+      question.options = [];
+    }
     question.options = [...question.options, ' '];
   }
+
   
   trackByIndex(index: number, item: any): number {
   return index;
