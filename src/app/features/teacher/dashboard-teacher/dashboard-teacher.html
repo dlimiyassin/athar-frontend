@@ -1,38 +1,88 @@
- <p-fluid class="grid grid-cols-12 gap-8">
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card">
-                    <div class="font-semibold text-xl mb-4">Linear</div>
-                    <p-chart type="line" [data]="lineData" [options]="lineOptions"></p-chart>
-                </div>
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card">
-                    <div class="font-semibold text-xl mb-4">Bar</div>
-                    <p-chart type="bar" [data]="barData" [options]="barOptions"></p-chart>
-                </div>
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card flex flex-col items-center">
-                    <div class="font-semibold text-xl mb-4">Pie</div>
-                    <p-chart type="pie" [data]="pieData" [options]="pieOptions"></p-chart>
-                </div>
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card flex flex-col items-center">
-                    <div class="font-semibold text-xl mb-4">Doughnut</div>
-                    <p-chart type="doughnut" [data]="pieData" [options]="pieOptions"></p-chart>
-                </div>
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card flex flex-col items-center">
-                    <div class="font-semibold text-xl mb-4">Polar Area</div>
-                    <p-chart type="polarArea" [data]="polarData" [options]="polarOptions"></p-chart>
-                </div>
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <div class="card flex flex-col items-center">
-                    <div class="font-semibold text-xl mb-4">Radar</div>
-                    <p-chart type="radar" [data]="radarData" [options]="radarOptions"></p-chart>
-                </div>
-            </div>
-        </p-fluid>
+<p-fluid class="grid grid-cols-12 gap-6">
+
+  <!-- KPI CARDS -->
+  <div class="col-span-12 md:col-span-3" *ngFor="let kpi of kpis">
+    <div class="flex items-center gap-4 card">
+      <div class="p-3 rounded-xl bg-primary-100 text-primary">
+        <i [ngClass]="[kpi.icon, 'text-2xl']"></i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">{{ kpi.label }}</div>
+        <div class="text-2xl font-semibold">{{ kpi.value }}</div>
+      </div>
+    </div>
+  </div>
+
+<div class="col-span-12 xl:col-span-6">
+  <div class="card">
+    <div class="flex justify-between mb-3">
+      <h3 class="font-semibold">My Recent Surveys</h3>
+      <a class="text-sm cursor-pointer text-primary">View All</a>
+    </div>
+
+    <p-table [value]="mySurveys" size="small">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Survey</th>
+          <th>Target</th>
+          <th class="text-center">Responses</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-s>
+        <tr>
+          <td>{{ s.title }}</td>
+          <td class="text-sm text-gray-500">{{ s.target }}</td>
+          <td class="text-center">
+            <span class="badge">{{ s.responses }}</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+
+  <!-- RECENT STUDENTS -->
+  <div class="col-span-12 xl:col-span-6">
+    <div class="card">
+      <div class="flex justify-between mb-3">
+        <h3 class="font-semibold">Recent Students</h3>
+        <a class="text-sm cursor-pointer text-primary">View All</a>
+      </div>
+
+      <p-table [value]="recentStudents" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Student</th>
+            <th>Email</th>
+            <th class="text-center">Answers</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-s>
+          <tr>
+            <td>{{ s.name }}</td>
+            <td class="text-sm text-gray-500">{{ s.email }}</td>
+            <td class="text-center">
+              <span class="badge badge-success">{{ s.answers }}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- ENGAGEMENT CHART -->
+  <div class="col-span-12">
+    <div class="card">
+      <h3 class="mb-4 font-semibold">Student Engagement Survey</h3>
+      <p-chart
+        type="bar"
+        [data]="engagementData"
+        [options]="engagementOptions">
+      </p-chart>
+    </div>
+  </div>
+
+</p-fluid>

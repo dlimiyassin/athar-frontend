@@ -1,264 +1,170 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { FluidModule } from 'primeng/fluid';
 import { debounceTime, Subscription } from 'rxjs';
 import { LayoutService } from '../../layout/service/layout.service';
+import { TableModule } from "primeng/table";
 
 @Component({
   selector: 'app-dashboard-teacher',
   standalone: true,
-  imports: [CommonModule, ChartModule, FluidModule],
+  imports: [CommonModule, ChartModule, FluidModule, TableModule],
   templateUrl: './dashboard-teacher.html',
   styleUrl: './dashboard-teacher.css',
 })
-export class DashboardTeacher {
- lineData: any;
+export class DashboardTeacher implements OnInit, OnDestroy {
 
-    barData: any;
+  // KPI values (mocked – later from API)
+  totalSurveys = 12;
+  activeSurveys = 5;
+  totalResponses = 342;
+  avgCompletionRate = 78;
 
-    pieData: any;
+  responsesLineData: any;
+  surveyBarData: any;
+  questionTypePieData: any;
 
-    polarData: any;
+  lineOptions: any;
+  barOptions: any;
+  pieOptions: any;
 
-    radarData: any;
+  subscription: Subscription;
 
-    lineOptions: any;
+kpis = [
+  { label: 'My Surveys', value: 8, icon: 'pi pi-file' },
+  { label: 'Total Responses', value: 463, icon: 'pi pi-chart-bar' },
+  { label: 'Active Surveys', value: 3, icon: 'pi pi-bolt' },
+  { label: 'Avg Satisfaction', value: '78%', icon: 'pi pi-star' }
+];
 
-    barOptions: any;
 
-    pieOptions: any;
+mySurveys = [
+  { title: 'Student Engagement', target: 'Students', responses: 76 },
+  { title: 'Course Feedback', target: 'Students', responses: 42 },
+  { title: 'Teaching Methods', target: 'Students', responses: 18 }
+];
 
-    polarOptions: any;
 
-    radarOptions: any;
+recentStudents = [
+  { name: 'Yassine El Amrani', email: 'y.elamrani@...', answers: 27 },
+  { name: 'Sofia Boukhari', email: 's.boukhari@...', answers: 24 },
+  { name: 'Abdelhak Khaini', email: 'a.khaini@...', answers: 38 }
+];
 
-    subscription: Subscription;
-    constructor(private layoutService: LayoutService) {
-        this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe(() => {
-            this.initCharts();
-        });
+engagementData = {
+  labels: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'],
+  datasets: [
+    {
+      label: 'Responses',
+      data: [43, 76, 34, 18, 12],
+      backgroundColor: [
+        '#22c55e',
+        '#4ade80',
+        '#facc15',
+        '#fb7185',
+        '#ef4444'
+      ]
     }
+  ]
+};
 
-    ngOnInit() {
-        this.initCharts();
-    }
+engagementOptions = {
+  plugins: {
+    legend: { display: false }
+  },
+  scales: {
+    y: { beginAtZero: true }
+  }
+};
 
-    initCharts() {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-        this.barData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'My First dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: 'My Second dataset',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
+  constructor(private layoutService: LayoutService) {
+    this.subscription = this.layoutService.configUpdate$
+      .pipe(debounceTime(25))
+      .subscribe(() => this.initCharts());
+  }
 
-        this.barOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500
-                        }
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
+  ngOnInit(): void {
+    this.initCharts();
+  }
 
-        this.pieData = {
-            labels: ['A', 'B', 'C'],
-            datasets: [
-                {
-                    data: [540, 325, 702],
-                    backgroundColor: [documentStyle.getPropertyValue('--p-indigo-500'), documentStyle.getPropertyValue('--p-purple-500'), documentStyle.getPropertyValue('--p-teal-500')],
-                    hoverBackgroundColor: [documentStyle.getPropertyValue('--p-indigo-400'), documentStyle.getPropertyValue('--p-purple-400'), documentStyle.getPropertyValue('--p-teal-400')]
-                }
-            ]
-        };
+  initCharts(): void {
+    const style = getComputedStyle(document.documentElement);
+    const textColor = style.getPropertyValue('--text-color');
+    const textColorSecondary = style.getPropertyValue('--text-color-secondary');
+    const borderColor = style.getPropertyValue('--surface-border');
+    const primary = style.getPropertyValue('--p-primary-500');
 
-        this.pieOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        usePointStyle: true,
-                        color: textColor
-                    }
-                }
-            }
-        };
-
-        this.lineData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-                {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-500'),
-                    tension: 0.4
-                },
-                {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    borderColor: documentStyle.getPropertyValue('--p-primary-200'),
-                    tension: 0.4
-                }
-            ]
-        };
-
-        this.lineOptions = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
-
-        this.polarData = {
-            datasets: [
-                {
-                    data: [11, 16, 7, 3],
-                    backgroundColor: [documentStyle.getPropertyValue('--p-indigo-500'), documentStyle.getPropertyValue('--p-purple-500'), documentStyle.getPropertyValue('--p-teal-500'), documentStyle.getPropertyValue('--p-orange-500')],
-                    label: 'My dataset'
-                }
-            ],
-            labels: ['Indigo', 'Purple', 'Teal', 'Orange']
-        };
-
-        this.polarOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                r: {
-                    grid: {
-                        color: surfaceBorder,
-                    },
-                    ticks: {
-                        display: false,
-                        color: textColorSecondary
-                    },
-                },
-            },
-        };
-
-        this.radarData = {
-            labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
-            datasets: [
-                {
-                    label: 'My First dataset',
-                    borderColor: documentStyle.getPropertyValue('--p-indigo-400'),
-                    pointBackgroundColor: documentStyle.getPropertyValue('--p-indigo-400'),
-                    pointBorderColor: documentStyle.getPropertyValue('--p-indigo-400'),
-                    pointHoverBackgroundColor: textColor,
-                    pointHoverBorderColor: documentStyle.getPropertyValue('--p-indigo-400'),
-                    data: [65, 59, 90, 81, 56, 55, 40]
-                },
-                {
-                    label: 'My Second dataset',
-                    borderColor: documentStyle.getPropertyValue('--p-purple-400'),
-                    pointBackgroundColor: documentStyle.getPropertyValue('--p-purple-400'),
-                    pointBorderColor: documentStyle.getPropertyValue('--p-purple-400'),
-                    pointHoverBackgroundColor: textColor,
-                    pointHoverBorderColor: documentStyle.getPropertyValue('--p-purple-400'),
-                    data: [28, 48, 40, 19, 96, 27, 100]
-                }
-            ]
-        };
-
-        this.radarOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: textColor
-                    }
-                }
-            },
-            scales: {
-                r: {
-                    pointLabels: {
-                        color: textColor
-                    },
-                    grid: {
-                        color: surfaceBorder
-                    }
-                }
-            }
-        };
-    }
-
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
+    /* ---------------- Responses over time ---------------- */
+    this.responsesLineData = {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      datasets: [
+        {
+          label: 'Responses',
+          data: [45, 89, 120, 88],
+          borderColor: primary,
+          backgroundColor: primary,
+          tension: 0.4,
+          fill: false
         }
-    }
+      ]
+    };
+
+    this.lineOptions = {
+      plugins: { legend: { labels: { color: textColor } } },
+      scales: {
+        x: { ticks: { color: textColorSecondary } },
+        y: { ticks: { color: textColorSecondary }, grid: { color: borderColor } }
+      }
+    };
+
+    /* ---------------- Responses per survey ---------------- */
+    this.surveyBarData = {
+      labels: ['Survey A', 'Survey B', 'Survey C', 'Survey D'],
+      datasets: [
+        {
+          label: 'Responses',
+          data: [120, 90, 70, 62],
+          backgroundColor: primary
+        }
+      ]
+    };
+
+    this.barOptions = {
+      plugins: { legend: { labels: { color: textColor } } },
+      scales: {
+        x: { ticks: { color: textColorSecondary } },
+        y: { ticks: { color: textColorSecondary }, grid: { color: borderColor } }
+      }
+    };
+
+    /* ---------------- Question types distribution ---------------- */
+    this.questionTypePieData = {
+      labels: ['Text', 'Choice', 'Scale'],
+      datasets: [
+        {
+          data: [40, 35, 25],
+          backgroundColor: [
+            style.getPropertyValue('--p-blue-500'),
+            style.getPropertyValue('--p-green-500'),
+            style.getPropertyValue('--p-orange-500')
+          ]
+        }
+      ]
+    };
+
+    this.pieOptions = {
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: textColor }
+        }
+      }
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
 }

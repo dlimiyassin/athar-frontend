@@ -150,7 +150,7 @@ export class AppMenu {
                 label: 'Surveys',
                 items: [
                     { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/student/view/surveys'] },
-                    { label: 'My Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/student/view/my-answers'] },
+                    { label: 'My Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/student/view/answers'] },
                      { label: 'Recommandation', icon: 'pi pi-fw pi-bolt', routerLink: ['/app/student/view/recommandation'] },
                 ]
             }

@@ -1,0 +1,123 @@
+@if (loading) {
+  <div class="py-20 text-center text-gray-500">
+    Loading survey...
+  </div>
+}
+
+@if (!loading && !submitted) {
+
+  <div class="max-w-2xl mx-auto space-y-6">
+
+    <!-- Progress -->
+    <p-progressBar [value]="progress"></p-progressBar>
+
+    <!-- Survey Header -->
+    <div class="space-y-1 text-center">
+      <h2 class="text-2xl font-semibold">{{ survey.title }}</h2>
+      <p class="text-sm text-gray-500">
+        {{ survey.description }}
+      </p>
+    </div>
+
+    <!-- Question Card -->
+    <p-card>
+
+      <div class="space-y-4">
+
+        <div class="text-sm text-gray-400">
+          Question {{ currentIndex + 1 }} / {{ survey.questions.length }}
+        </div>
+
+        <h3 class="text-lg font-medium">
+          {{ currentQuestion.label }}
+        </h3>
+
+        <!-- CHOICE / SCALE -->
+        @if (
+          currentQuestion.type === QuestionType.CHOICE ||
+          currentQuestion.type === QuestionType.SCALE
+        ) {
+          <div class="space-y-3">
+            @for (opt of currentQuestion.options; track $index) {
+              <div class="flex items-center gap-3">
+                <p-radioButton
+                  name="answer"
+                  [value]="opt"
+                  [(ngModel)]="answers[currentQuestion.id]">
+                </p-radioButton>
+                <label class="text-sm">{{ opt }}</label>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- TEXT -->
+        @if (currentQuestion.type === QuestionType.TEXT) {
+          <textarea
+            pInputTextarea
+            rows="4"
+            class="w-full"
+            placeholder="Write your answer..."
+            [(ngModel)]="answers[currentQuestion.id]">
+          </textarea>
+        }
+
+      </div>
+
+    </p-card>
+
+    <!-- Navigation -->
+    <div class="flex justify-between">
+
+      <button
+        pButton
+        label="Previous"
+        class="p-button-text"
+        [disabled]="currentIndex === 0"
+        (click)="previous()">
+      </button>
+
+      @if (!isLastQuestion()) {
+        <button
+          pButton
+          label="Next"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (click)="next()">
+        </button>
+      }
+
+      @if (isLastQuestion()) {
+        <button
+          pButton
+          label="Submit"
+          icon="pi pi-check"
+          severity="success"
+          (click)="submit()">
+        </button>
+      }
+
+    </div>
+
+  </div>
+}
+
+@if (submitted) {
+
+  <div class="max-w-md mx-auto mt-20">
+    <p-card class="text-center">
+
+      <i class="mb-4 text-5xl text-green-500 pi pi-check-circle"></i>
+
+      <h2 class="mb-2 text-xl font-semibold">
+        Survey Submitted
+      </h2>
+
+      <p class="text-sm text-gray-600">
+        Thank you for your feedback. Your responses have been successfully recorded.
+      </p>
+
+    </p-card>
+  </div>
+
+}

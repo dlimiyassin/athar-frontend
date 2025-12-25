@@ -1,0 +1,58 @@
+<div class="space-y-6">
+
+  <h2 class="text-xl font-semibold">Recent Surveys</h2>
+
+  @if (loading) {
+    <p>Loading surveys...</p>
+  }
+
+  @if (!loading && surveys.length === 0) {
+    <div class="text-gray-500">
+      No active surveys available.
+    </div>
+  }
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+
+    @for (survey of surveys; track survey.id) {
+
+      <p-card class="relative">
+
+        <!-- NEW flag -->
+        @if (isNewSurvey(survey.createdAt)) {
+          <p-tag
+            value="NEW"
+            severity="success"
+            class="absolute top-3 right-3">
+          </p-tag>
+        }
+
+        <ng-template pTemplate="title">
+          {{ survey.title }}
+        </ng-template>
+
+        <ng-template pTemplate="subtitle">
+          {{ survey.target }}
+        </ng-template>
+
+        <p class="text-sm text-gray-600 line-clamp-3">
+          {{ survey.description || 'No description provided.' }}
+        </p>
+
+        <div class="flex justify-end mt-4">
+          <button
+            pButton
+            label="View"
+            icon="pi pi-eye"
+            class="p-button-text"
+            (click)="openSurvey(survey)">
+          </button>
+        </div>
+
+      </p-card>
+
+    }
+
+  </div>
+
+</div>
