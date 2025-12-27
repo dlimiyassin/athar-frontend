@@ -11,7 +11,7 @@ import { LoginDto } from '../../zBase/security/model/loginDto.model';
 export class StudentService {
 
     // declarations
-    readonly API = environment.apiUrlService + "students/";
+    readonly API = environment.apiUrlService + "students";
     private _students: StudentDto[] = [];
     private _selectedStudents: StudentDto[] = [];
     private _student!: StudentDto;
@@ -79,20 +79,20 @@ export class StudentService {
     }
 
     public completeProfile(student: StudentDto): Observable<StudentDto> {
-        return this.http.post<StudentDto>(this.API + "complete-profile", student);
+        return this.http.post<StudentDto>(this.API + "/complete-profile", student);
     }
 
 
     public findById(id: string) {
-        return this.http.get<StudentDto>(this.API + "id/" + id);
+        return this.http.get<StudentDto>(this.API + "/id/" + id);
     }
 
     public findByUserId(userId: string) {
-        return this.http.get<StudentDto>(this.API + "user/" + userId);
+        return this.http.get<StudentDto>(this.API + "/user/" + userId);
     }
 
     public delete(id: number) {
-        return this.http.delete<number>(this.API + "id/" + id);
+        return this.http.delete<number>(this.API + "/id/" + id);
     }
 
     public edit(student: StudentDto) {
@@ -100,7 +100,7 @@ export class StudentService {
     }
 
     checkStudentProfileSetup(): Observable<boolean> {
-        return this.http.get<boolean>(`${this.API}check-student-setup`);
+        return this.http.get<boolean>(`${this.API}/check-student-setup`);
     }
 
     // findByCriteria(studentCriteria: StudentCriteria): Observable<Array<StudentDto>> {
