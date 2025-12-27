@@ -31,7 +31,7 @@ import { StringUtil } from '../../../zBase/utils/StringUtil';
 
         <p-toast/>
 
-        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center mt-8 max-h-screen px-4">
+        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center pt-8 max-h-screen px-4">
           <div class="w-full max-w-lg">
 
             <div
