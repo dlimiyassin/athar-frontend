@@ -4,7 +4,6 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {TokenService} from "./token.service";
-import {MessageService} from "primeng/api";
 import {environment} from "../../../../environments/environment";
 import {UserDto} from "../model/userDto.model";
 import {RoleDto} from "../model/roleDto.model";
@@ -38,7 +37,6 @@ export class AuthService {
 
     constructor(private http: HttpClient, private tokenService: TokenService,
                 private router: Router,
-                private messageService: MessageService,
                 private studentService: StudentService
     ) {
     }
@@ -69,20 +67,21 @@ export class AuthService {
             
             this.tokenService.saveToken(token, refreshToken);
             this.loadInfos();
-            this.studentService.setProfileSetup(false);
+            this.studentService.setProfileIncompleted(true);
             this.studentService.setCurrentStep(2);
 
             if (this.isStudent) {
               //this.router.navigate(['/app/student/view']);
                   this.studentService.checkStudentProfileSetup().subscribe({
-                    next: (isCompleted : boolean) => {
-                      if (isCompleted) {
-                        this.studentService.setProfileSetup(false);
-                        this.router.navigate(['/app/student/view']);
-                      } else {
-                        this.studentService.setProfileSetup(true);
-                        this.router.navigate(['/app/student/view/setup-profile']);
-                      }
+                    next: (isProfileIncompleted : boolean) => {
+                        console.log('isProfileIncompleted', isProfileIncompleted);
+                        
+                        this.studentService.setProfileIncompleted(isProfileIncompleted);
+                      if (isProfileIncompleted) {
+                          this.router.navigate(['/app/student/view/setup-profile']);
+                        } else {
+                            this.router.navigate(['/app/student/view']);
+                        }
                     },
                     error: (err) => {
                       console.error('Error checking profile setup', err);
@@ -144,10 +143,7 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
         localStorage.clear();
         console.log('You are logged out successfully');
-        this.studentService.clearProfileSetup();
-        console.log("==========================================");
-        console.log(this.studentService._isSetupProfile.getValue());
-        
+        this.studentService.checkStudentProfileSetup();
     }
 
     get user(): UserDto {

@@ -24,6 +24,7 @@ import { AcademicFieldsConfigService } from '../../../core/services/academic-fie
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
+import { UserService } from '../../../zBase/security/service/user.service';
 
 @Component({
   selector: 'app-complete-profile',
@@ -73,15 +74,26 @@ export class CompleteProfile implements OnInit {
     private studentService: StudentService,
     private academicFieldsConfigService: AcademicFieldsConfigService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.currentStep = this.studentService._currentStep.getValue();
     this.studentService.currentStep$.subscribe(step => this.currentStep = step);
 
-    this.studentDto.id = null;
-    this.studentDto.user = null;
+this.userService.loadAuthenticatedUser().subscribe(user => {
+    this.studentDto.user = user;
+
+    // Only now we can call findByUserId
+    this.studentService.findByUserId(String(user.id)).subscribe(student => {
+        this.studentDto = student;
+        this.academicProfile = student.academicProfile;
+        this.academicProfile.currentDiploma = student.academicProfile?.currentDiploma;
+        this.academicProfile.diplomes = student.academicProfile?.diplomes;
+    });
+});
+
 
     this.academicFieldsConfigService.findAll().subscribe(fields => {
       this.academicFields = fields;
@@ -223,7 +235,7 @@ export class CompleteProfile implements OnInit {
     this.studentService.completeProfile(this.studentDto).subscribe({
       next: () => {
         this.isLoading = false;
-        this.studentService.setProfileSetup(false);
+        this.studentService.setProfileIncompleted(false);
         this.router.navigate(['app/student/view']);
       },
       error: err => {

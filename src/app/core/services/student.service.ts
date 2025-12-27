@@ -11,7 +11,7 @@ import { LoginDto } from '../../zBase/security/model/loginDto.model';
 export class StudentService {
 
     // declarations
-    readonly API = environment.apiUrlService + "students";
+    readonly API = environment.apiUrlService + "students/";
     private _students: StudentDto[] = [];
     private _selectedStudents: StudentDto[] = [];
     private _student!: StudentDto;
@@ -23,20 +23,20 @@ export class StudentService {
 
 
 
-    // isSetupProfile
-    private readonly STORAGE_KEY_SETUP = 'isSetupProfile';
-    public _isSetupProfile = new BehaviorSubject<boolean>(
-      JSON.parse(localStorage.getItem(this.STORAGE_KEY_SETUP) ?? 'false')
+    // isProfileIncompleted logic
+    private readonly STORAGE_KEY_SETUP = 'isProfileIncompleted';
+    public _isProfileIncompleted = new BehaviorSubject<boolean>(
+      JSON.parse(localStorage.getItem(this.STORAGE_KEY_SETUP) ?? 'true')
     );
-    public isSetupProfile$ = this._isSetupProfile.asObservable();
+    public isProfileIncompleted$ = this._isProfileIncompleted.asObservable();
 
-    setProfileSetup(value: boolean): void {
-      this._isSetupProfile.next(value);
+    setProfileIncompleted(value: boolean): void {
+      this._isProfileIncompleted.next(value);
       localStorage.setItem(this.STORAGE_KEY_SETUP, JSON.stringify(value));
     }
-    
-    clearProfileSetup(): void {
-      this._isSetupProfile.next(false);
+
+    clearProfileIncompleted(): void {
+      this._isProfileIncompleted.next(false);
       localStorage.removeItem(this.STORAGE_KEY_SETUP);
     }
 
@@ -79,7 +79,7 @@ export class StudentService {
     }
 
     public completeProfile(student: StudentDto): Observable<StudentDto> {
-        return this.http.post<StudentDto>(this.API + "/complete-profile", student);
+        return this.http.post<StudentDto>(this.API + "complete-profile", student);
     }
 
 
@@ -87,8 +87,8 @@ export class StudentService {
         return this.http.get<StudentDto>(this.API + "id/" + id);
     }
 
-    public findByEmail(email: string) {
-        return this.http.get<StudentDto>(this.API + "email/" + email);
+    public findByUserId(userId: string) {
+        return this.http.get<StudentDto>(this.API + "user/" + userId);
     }
 
     public delete(id: number) {
@@ -100,7 +100,7 @@ export class StudentService {
     }
 
     checkStudentProfileSetup(): Observable<boolean> {
-        return this.http.get<boolean>(`${this.API}/check-student-setup`);
+        return this.http.get<boolean>(`${this.API}check-student-setup`);
     }
 
     // findByCriteria(studentCriteria: StudentCriteria): Observable<Array<StudentDto>> {

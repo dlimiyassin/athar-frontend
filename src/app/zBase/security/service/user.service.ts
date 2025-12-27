@@ -67,6 +67,12 @@ export class UserService extends BaseService {
         return this.http.patch<UserDto>(this.API + 'update-password/email/' + user.email + '/new-password/' + user.password, null);
     }
 
+
+    public loadAuthenticatedUser(): Observable<UserDto> {
+        return this.http.get<UserDto>(this.API + 'authenticated-user');
+    }
+
+
     public changePasswordBasedOnCurrentPassword(email: string, currentPassword: string, newPassword: string) {
         return this.http.patch<UserDto>(this.API + 'update-password/email/' + email + '/current-password/' + currentPassword + '/new-password/' + newPassword, null);
     }

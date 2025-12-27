@@ -46,7 +46,7 @@ import { TimelineModule } from 'primeng/timeline';
     `,
     imports: [AppMenu, CommonModule, TimelineModule, ButtonModule, CardModule],
     template: ` 
-    @if (!isCompleteProfile) 
+    @if (!isProfileIncompleted) 
         { 
             <div class="layout-sidebar"> 
                 <app-menu></app-menu> 
@@ -84,7 +84,7 @@ import { TimelineModule } from 'primeng/timeline';
 })
 export class AppSidebar {
 
-    isCompleteProfile = true;
+    isProfileIncompleted = true;
 
     steps: TimelineStep[] = [];
     currentStep: number = 2;
@@ -96,9 +96,9 @@ export class AppSidebar {
     ) {}
 
 ngOnInit(): void {
-    this.isCompleteProfile = this.studentService._isSetupProfile.getValue();
-    this.studentService.isSetupProfile$.subscribe(value => {
-        this.isCompleteProfile = value;
+    this.isProfileIncompleted = this.studentService._isProfileIncompleted.getValue();
+    this.studentService.isProfileIncompleted$.subscribe(value => {
+        this.isProfileIncompleted = value;
     });
     
     this.currentStep = this.studentService._currentStep.getValue();
