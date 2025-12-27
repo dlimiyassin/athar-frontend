@@ -2,9 +2,9 @@ import { AnswerDto } from "./answer.dto";
 
 
 export class SurveyResponseDto {
-  id!: string;
-  surveyId!: string;
-  studentId!: string;
+  id!: string | null;
+  surveyId!: string | null;
+  studentId!: string | null;
   answers!: AnswerDto[];
-  submittedAt!: string; // ISO Instant
+  submittedAt!: string | null; // ISO Instant
 }

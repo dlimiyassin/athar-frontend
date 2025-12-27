@@ -13,6 +13,8 @@ import { QuestionType } from '../../../../core/enums/question-type.enum';
 import { QuestionDto } from '../../../../core/models/question.dto';
 import { SurveyDto } from '../../../../core/models/survey.dto';
 import { SurveyService } from '../../../../core/services/survey.service';
+import { SurveyResponseService } from '../../../../core/services/survey.response.service';
+import { SurveyResponseDto } from '../../../../core/models/survey-response.dto';
 
 @Component({
   selector: 'app-surveying-student',
@@ -44,7 +46,8 @@ export class SurveyingStudent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private surveyService: SurveyService
+    private surveyService: SurveyService,
+    private surveyResponseService: SurveyResponseService
   ) {}
 
   ngOnInit(): void {
@@ -85,14 +88,42 @@ export class SurveyingStudent implements OnInit {
     }
   }
 
-  submit(): void {
-    console.log('Survey answers:', this.answers);
+submit(): void {
 
-    // TODO: call backend submit endpoint when available
-    // this.surveyService.submitAnswers(this.survey.id, this.answers)
-
-    this.submitted = true;
+  console.log('Preparing to submit survey');
+  
+  
+  if (!this.survey) {
+    return;
   }
+  console.log('Submitting survey with answers:', this.answers);
+
+  // 1️⃣ Build answers array from the map
+  const answerList = Object.keys(this.answers).map(questionId => ({
+    questionId,
+    value: String(this.answers[questionId] ?? '')
+  }));
+
+  // 2️⃣ Build SurveyResponseDto
+  const response: SurveyResponseDto = {
+    id: null,
+    surveyId: this.survey.id,
+    studentId: null,   // <- replace with real studentId in backend
+    answers: answerList,
+    submittedAt: null
+  };
+
+  // 3️⃣ Submit to backend
+  this.surveyResponseService.submit(response).subscribe({
+    next: () => {
+      this.submitted = true;
+    },
+    error: err => {
+      console.error('Failed to submit survey response', err);
+    }
+  });
+}
+
 
   /* ----------------------- */
   /* HELPERS */
