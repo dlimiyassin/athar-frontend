@@ -4,7 +4,27 @@
   </div>
 }
 
-@if (!loading && !submitted) {
+@if (!loading && !submitted && survey.questions.length === 0) {
+
+  <div class="max-w-md mx-auto mt-20">
+    <p-card class="text-center">
+
+      <i class="mb-4 text-5xl text-yellow-500 pi pi-exclamation-triangle"></i>
+
+      <h2 class="mb-2 text-xl font-semibold">
+        No Questions Available
+      </h2>
+
+      <p class="text-sm text-gray-600">
+        This survey does not contain any questions at the moment.
+      </p>
+
+    </p-card>
+  </div>
+
+}
+
+@if (!loading && !submitted && survey.questions.length > 0) {
 
   <div class="max-w-5xl mx-auto space-y-6">
 
@@ -101,6 +121,8 @@
 
   </div>
 }
+
+
 
 @if (submitted) {
 

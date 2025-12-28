@@ -7,8 +7,16 @@
   }
 
   @if (!loading && surveys.length === 0) {
-    <div class="text-gray-500">
-      No active surveys available.
+    <div class="mt-10">
+      <p-card class="text-center">
+      
+        <i class="mb-4 text-5xl pi pi-clock"></i>
+      
+        <p class="text-sm text-gray-600">
+          No active surveys available. Please check back later.
+        </p>
+      
+      </p-card>
     </div>
   }
 
@@ -28,7 +36,7 @@
         }
 
         <ng-template pTemplate="title">
-          {{ survey.title }}
+          <span class="font-extrabold text-lg text-gray-800">{{ survey.title }}</span>
         </ng-template>
 
         <ng-template pTemplate="subtitle">

@@ -9,7 +9,9 @@ import { SurveyingStudent } from "./survey/surveying-student/surveying-student";
 export const STUDENT_VIEW_ROUTES: Routes = [
   {
     path: '',
-    component: StudentHomePage,
+    redirectTo: 'surveys',
+    pathMatch: 'full',
+    //component: StudentHomePage,
   },
   {
     path : 'setup-profile',

@@ -26,36 +26,13 @@ export class SurveyListTeacher implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadSurveys();
+    this.loadSurveysByTeacher();
   }
 
-  // Method to load surveys from API
-  loadSurveys(): void {
-    this.loading = true;
-    
-    this.surveyService.findAll().subscribe({
-      next: (data) => {
-        this.surveys = data;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading surveys:', error);
-        this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load surveys. Please try again.'
-        });
-      }
-    });
-  }
-
-  // Alternative: Load surveys by teacher if you want only teacher's surveys
   loadSurveysByTeacher(): void {
     this.loading = true;
-    const teacherId = this.getCurrentTeacherId(); // You need to implement this
-    
-    this.surveyService.findByTeacher(teacherId).subscribe({
+
+    this.surveyService.findByTeacher().subscribe({
       next: (data) => {
         this.surveys = data;
         this.loading = false;
@@ -76,11 +53,4 @@ export class SurveyListTeacher implements OnInit {
     this.router.navigate(['app/teacher/view/surveys', survey.id]);
   }
 
-  // Helper method - you need to implement based on your auth system
-  private getCurrentTeacherId(): string {
-    // Example: Get from localStorage, auth service, etc.
-    // This depends on how you store teacher info
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    return user.id || 'default-teacher-id'; // Replace with actual logic
-  }
 }

@@ -15,6 +15,7 @@ import { SurveyDto } from '../../../../core/models/survey.dto';
 import { SurveyService } from '../../../../core/services/survey.service';
 import { SurveyResponseService } from '../../../../core/services/survey.response.service';
 import { SurveyResponseDto } from '../../../../core/models/survey-response.dto';
+import { AnswerDto } from '../../../../core/models/answer.dto';
 
 @Component({
   selector: 'app-surveying-student',
@@ -98,22 +99,24 @@ submit(): void {
   }
   console.log('Submitting survey with answers:', this.answers);
 
-  // 1️⃣ Build answers array from the map
-  const answerList = Object.keys(this.answers).map(questionId => ({
+  // Build answers array from the map
+  const answerList : AnswerDto[] = Object.keys(this.answers).map(questionId => ({
     questionId,
+    questionLabel: this.survey.questions.find(q => q.id === questionId)?.label ?? '',
     value: String(this.answers[questionId] ?? '')
   }));
 
-  // 2️⃣ Build SurveyResponseDto
+  // Build SurveyResponseDto
   const response: SurveyResponseDto = {
     id: null,
+    surveyLabel: this.survey.title,
     surveyId: this.survey.id,
     studentId: null,   // <- replace with real studentId in backend
     answers: answerList,
     submittedAt: null
   };
 
-  // 3️⃣ Submit to backend
+  // Submit to backend
   this.surveyResponseService.submit(response).subscribe({
     next: () => {
       this.submitted = true;

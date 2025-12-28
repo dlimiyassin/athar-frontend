@@ -31,11 +31,11 @@ export class SurveyListStudent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadSurveys();
+    this.findSurveyNotAnsweredByStudent();
   }
 
-  private loadSurveys(): void {
-    this.surveyService.findAll().subscribe({
+  private findSurveyNotAnsweredByStudent(): void {
+    this.surveyService.findSurveyNotAnsweredByStudent().subscribe({
       next: (surveys: SurveyDto[]) => {
         this.surveys = surveys;
         const now = Date.now();

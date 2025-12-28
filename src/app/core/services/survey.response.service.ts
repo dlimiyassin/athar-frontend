@@ -13,6 +13,12 @@ export class SurveyResponseService {
 
   constructor(private http: HttpClient) {}
 
+  findByStudent(): Observable<SurveyResponseDto[]> {
+    return this.http.get<SurveyResponseDto[]>(
+      `${this.API}/student`
+    );
+  }
+
   /**
    * Submit a survey response
    */

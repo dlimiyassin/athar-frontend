@@ -142,15 +142,15 @@ export class AppMenu {
         ];
 
         this.modelStudent = [
-            {
-                label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/student/view/'] }]
-            },
+            // {
+            //     label: 'Home',
+            //     items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/student/view/'] }]
+            // },
             {
                 label: 'Surveys',
                 items: [
                     { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/student/view/surveys'] },
-                    { label: 'My Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/student/view/answers'] },
+                    { label: 'Answered Surveys', icon: 'pi pi-fw pi-send', routerLink: ['/app/student/view/answers'] },
                      { label: 'Recommandation', icon: 'pi pi-fw pi-bolt', routerLink: ['/app/student/view/recommandation'] },
                 ]
             }

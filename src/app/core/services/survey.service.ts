@@ -28,8 +28,16 @@ export class SurveyService {
     return this.http.get<SurveyDto>(`${this.API}/${id}`);
   }
 
-  public findByTeacher(teacherId: string): Observable<SurveyDto[]> {
-    return this.http.get<SurveyDto[]>(`${this.API}/teacher/${teacherId}`);
+  public findByTeacher(): Observable<SurveyDto[]> {
+    return this.http.get<SurveyDto[]>(`${this.API}/teacher`);
+  }
+
+  public findSurveyAnsweredByStudent(): Observable<SurveyDto[]> {
+    return this.http.get<SurveyDto[]>(`${this.API}/answered-by-student`);
+  }
+
+  public findSurveyNotAnsweredByStudent(): Observable<SurveyDto[]> {
+    return this.http.get<SurveyDto[]>(`${this.API}/not-answered-by-student`);
   }
 
   public create(survey: SurveyDto): Observable<SurveyDto> {
