@@ -103,14 +103,6 @@ export class StudentService {
         return this.http.get<boolean>(`${this.API}/check-student-setup`);
     }
 
-    // findByCriteria(studentCriteria: StudentCriteria): Observable<Array<StudentDto>> {
-    //     return this.http.post<Array<StudentDto>>(this.API + "find-by-criteria", studentCriteria);
-    // }
-
-    // findStudentsByRoleName(roleName: string): Observable<Array<StudentDto>> {
-    //     return this.http.get<Array<StudentDto>>(this.API + "find-by-role/roleName/" + roleName);
-    // }
-
     // getters and setters
     get students(): StudentDto[] {
         return this._students;

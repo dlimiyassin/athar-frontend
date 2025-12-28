@@ -19,16 +19,10 @@ export class SurveyResponseService {
     );
   }
 
-  /**
-   * Submit a survey response
-   */
   submit(response: SurveyResponseDto): Observable<SurveyResponseDto> {
     return this.http.post<SurveyResponseDto>(`${this.API}`, response);
   }
 
-  /**
-   * Get a student's response to a given survey
-   */
   findBySurveyAndStudent(
     surveyId: string,
     studentId: string
@@ -38,9 +32,6 @@ export class SurveyResponseService {
     );
   }
 
-  /**
-   * Get all responses for a survey
-   */
   findBySurvey(surveyId: string): Observable<SurveyResponseDto[]> {
     return this.http.get<SurveyResponseDto[]>(
       `${this.API}/survey/${surveyId}`

@@ -108,7 +108,7 @@ export class ViewSurvey implements OnInit {
     return {
       id: this.generateUUID(),
       label: '',
-      type: null,
+      type: '' as QuestionType,
       options: []
     };
   }
