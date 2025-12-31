@@ -1,4 +1,4 @@
-export enum Universite {
+export enum University {
   SOLTAN_MOLAY_SLIMANE = 'SOLTAN_MOLAY_SLIMANE',
   HASSAN_2 = 'HASSAN_2',
   IBN_TOFAIL = 'IBN_TOFAIL',

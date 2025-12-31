@@ -11,7 +11,6 @@ import { TableModule } from 'primeng/table';
 import { DatePickerModule } from 'primeng/datepicker';
 
 import { FieldType } from '../../../core/enums/field-type.enum';
-import { Universite } from '../../../core/enums/universite.enum';
 
 import { AcademicProfileFieldDto } from '../../../core/models/academic-profile-field.dto';
 import { AcademicProfileDto } from '../../../core/models/academic-profile.dto';
@@ -25,6 +24,7 @@ import { MessageService } from 'primeng/api';
 import { Toast } from "primeng/toast";
 import { UserService } from '../../../zBase/security/service/user.service';
 import { StudyLevel } from '../../../core/enums/study-level.enum';
+import { University } from '../../../core/enums/university.enum';
 
 @Component({
   selector: 'app-complete-profile',
@@ -62,12 +62,12 @@ export class CompleteProfile implements OnInit {
 
   academicFields: AcademicProfileFieldDto[] = [];
 
-  universites = Object.values(Universite).map(v => ({
+  universities = Object.values(University).map(v => ({
     label: v.replaceAll('_', ' '),
     value: v
   }));
 
-  niveaux = Object.values(StudyLevel);
+  levels = Object.values(StudyLevel);
   fieldType = FieldType;
 
   constructor(
@@ -106,7 +106,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
 
   createEmptyDiploma(): DiplomeDto {
     return {
-      universite: null,
+      university: null,
       ecole: '',
       studyLevel: null,
       filiere: '',
@@ -205,7 +205,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
   validateDiploma(d: DiplomeDto, strict: boolean): boolean {
     this.errorMessages = [];
 
-    if (!d.universite) this.errorMessages.push('University is required');
+    if (!d.university) this.errorMessages.push('University is required');
     if (!d.ecole) this.errorMessages.push('School is required');
     if (!d.studyLevel) this.errorMessages.push('Level is required');
     if (!d.filiere) this.errorMessages.push('Field of study is required');

@@ -1,8 +1,8 @@
-import { Universite } from '../enums/universite.enum';
+import { University } from '../enums/university.enum';
 import { StudyLevel } from '../enums/study-level.enum';
 
 export class DiplomeDto {
-  universite!: Universite | null;;
+  university!: University | null;;
   ecole!: string;
   studyLevel!: StudyLevel  | null;;
   filiere!: string;
