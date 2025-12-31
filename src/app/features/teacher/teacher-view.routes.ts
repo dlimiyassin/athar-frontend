@@ -6,6 +6,7 @@ import { SurveyListTeacher } from "./survey/survey-list-teacher/survey-list-teac
 import { SurveyCreateTeacher } from "./survey/survey-create-teacher/survey-create-teacher";
 import { AcademicFieldsConfig } from "./academic-fields-config/academic-fields-config";
 import { ViewSurvey } from "./survey/view-survey/view-survey";
+import { ExportImport } from "./export-import/export-import";
 
 export const TEACHER_VIEW_ROUTES: Routes = [
 
@@ -36,5 +37,9 @@ export const TEACHER_VIEW_ROUTES: Routes = [
   {
     path: 'form-config',
     component: AcademicFieldsConfig
+  },
+  {
+    path: 'export-import',
+    component: ExportImport
   }
 ];

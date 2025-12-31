@@ -1,0 +1,52 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Survey Data Management</h1>
+  </div>
+
+  <div class="sections">
+
+    <!-- EXPORT -->
+    <div class="card">
+      <h2>Export Data</h2>
+      <p class="description">
+        Download all student survey responses in CSV format.
+        This file includes academic profile fields and survey answers.
+      </p>
+
+      <button
+        class="primary-btn"
+        (click)="exportStudentsSurveys()"
+        [disabled]="exporting"
+      >
+        {{ exporting ? 'Exporting...' : 'Export Surveys CSV' }}
+      </button>
+    </div>
+
+    <!-- IMPORT -->
+    <div class="card">
+      <h2>Import Data</h2>
+      <p class="description">
+        Upload an Excel or CSV file to feed survey data into the system.
+        Import validation and preview will be added later.
+      </p>
+
+      <input
+        type="file"
+        accept=".csv,.xlsx"
+        (change)="onFileSelected($event)"
+      />
+
+      <button
+        class="secondary-btn"
+        [disabled]="!selectedFile || importing"
+        (click)="importFile()"
+      >
+        Import File
+      </button>
+    </div>
+
+  </div>
+
+</div>

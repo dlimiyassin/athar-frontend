@@ -138,7 +138,11 @@ export class AppMenu {
                         routerLink: ['/app/teacher/view/form-config']
                     },
                 ]
-            }
+            },
+            {
+                label: 'Export / Import',
+                items: [{ label: 'Export / Import', icon: 'pi pi-fw pi-download', routerLink: ['/app/teacher/view/export-import'] }]
+            },
         ];
 
         this.modelStudent = [
