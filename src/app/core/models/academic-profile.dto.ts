@@ -1,9 +1,10 @@
-import { DiplomeDto } from "./diplome.dto";
+import { DiplomaDto } from "./diploma.dto";
+
 
 
 export class AcademicProfileDto {
-  currentDiploma!: DiplomeDto;
+  currentDiploma!: DiplomaDto;
   customAttributes!: Record<string, any>;
-  diplomes!: DiplomeDto[];
+  diplomas!: DiplomaDto[];
 }
 

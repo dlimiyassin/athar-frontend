@@ -1,7 +1,7 @@
 import { University } from '../enums/university.enum';
 import { StudyLevel } from '../enums/study-level.enum';
 
-export class DiplomeDto {
+export class DiplomaDto {
   university!: University | null;;
   ecole!: string;
   studyLevel!: StudyLevel  | null;;

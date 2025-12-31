@@ -14,7 +14,6 @@ import { FieldType } from '../../../core/enums/field-type.enum';
 
 import { AcademicProfileFieldDto } from '../../../core/models/academic-profile-field.dto';
 import { AcademicProfileDto } from '../../../core/models/academic-profile.dto';
-import { DiplomeDto } from '../../../core/models/diplome.dto';
 import { StudentDto } from '../../../core/models/student.dto';
 
 import { StudentService } from '../../../core/services/student.service';
@@ -25,6 +24,7 @@ import { Toast } from "primeng/toast";
 import { UserService } from '../../../zBase/security/service/user.service';
 import { StudyLevel } from '../../../core/enums/study-level.enum';
 import { University } from '../../../core/enums/university.enum';
+import { DiplomaDto } from '../../../core/models/diploma.dto';
 
 @Component({
   selector: 'app-complete-profile',
@@ -54,11 +54,11 @@ export class CompleteProfile implements OnInit {
 
   academicProfile: AcademicProfileDto = {
     currentDiploma: this.createEmptyDiploma(),
-    diplomes: [],
+    diplomas: [],
     customAttributes: {}
   };
 
-  diplomaForm: DiplomeDto = this.createEmptyDiploma();
+  diplomaForm: DiplomaDto = this.createEmptyDiploma();
 
   academicFields: AcademicProfileFieldDto[] = [];
 
@@ -90,7 +90,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
         this.studentDto = student;
         this.academicProfile = student.academicProfile;
         this.academicProfile.currentDiploma = student.academicProfile?.currentDiploma;
-        this.academicProfile.diplomes = student.academicProfile?.diplomes;
+        this.academicProfile.diplomas = student.academicProfile?.diplomas;
     });
 });
 
@@ -104,7 +104,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
   /* FACTORIES */
   /* ----------------------- */
 
-  createEmptyDiploma(): DiplomeDto {
+  createEmptyDiploma(): DiplomaDto {
     return {
       university: null,
       ecole: '',
@@ -172,12 +172,12 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
       return;
     }
 
-    this.academicProfile.diplomes.push({ ...this.diplomaForm });
+    this.academicProfile.diplomas.push({ ...this.diplomaForm });
     this.diplomaForm = this.createEmptyDiploma();
   }
 
   removeDiploma(index: number): void {
-    this.academicProfile.diplomes.splice(index, 1);
+    this.academicProfile.diplomas.splice(index, 1);
   }
 
   /* ----------------------- */
@@ -202,7 +202,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
     return this.errorMessages.length === 0;
   }
 
-  validateDiploma(d: DiplomeDto, strict: boolean): boolean {
+  validateDiploma(d: DiplomaDto, strict: boolean): boolean {
     this.errorMessages = [];
 
     if (!d.university) this.errorMessages.push('University is required');
