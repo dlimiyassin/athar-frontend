@@ -53,7 +53,7 @@
           <p-select
             [options]="niveaux"
             placeholder="Level"
-            [(ngModel)]="academicProfile.currentDiploma.niveauEtude">
+            [(ngModel)]="academicProfile.currentDiploma.studyLevel">
           </p-select>
 
           <input pInputText placeholder="Field of Study"
@@ -91,7 +91,7 @@
           <p-select
             [options]="niveaux"
             placeholder="Level"
-            [(ngModel)]="diplomaForm.niveauEtude">
+            [(ngModel)]="diplomaForm.studyLevel">
           </p-select>
 
           <input pInputText placeholder="Field"
@@ -123,7 +123,7 @@
           <ng-template pTemplate="body" let-d let-i="rowIndex">
             <tr>
               <td>{{ d.universite }}</td>
-              <td>{{ d.niveauEtude }}</td>
+              <td>{{ d.studyLevel }}</td>
               <td>{{ d.intitule }}</td>
               <td>
                 <button

@@ -1,4 +1,4 @@
-export enum NiveauEtude {
+export enum StudyLevel {
   BAC = 'BAC',
   BAC_PLUS_1 = 'BAC_PLUS_1',
   BAC_PLUS_2 = 'BAC_PLUS_2',
