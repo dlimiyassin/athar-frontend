@@ -49,7 +49,7 @@
           {{ survey.createdAt | date:'medium' }}
         </td>
 
-        <td class="flex gap-2 justify-center">
+        <td class="flex gap-2 justify-start items-center">
           <button
             pButton
             icon="pi pi-eye"
@@ -57,6 +57,14 @@
             (click)="onView(survey)"
             pTooltip="View Survey"
           ></button>
+<button
+  pButton
+  icon="pi pi-trash"
+  class="p-button-text p-button-danger"
+  (click)="confirmDelete(survey)"
+  pTooltip="Delete Survey"
+></button>
+
         </td>
       </tr>
     </ng-template>
@@ -73,3 +81,5 @@
     }
   </p-table>
 </div>
+
+<p-confirmDialog></p-confirmDialog>

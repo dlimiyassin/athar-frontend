@@ -25,6 +25,7 @@ import { UserService } from '../../../zBase/security/service/user.service';
 import { StudyLevel } from '../../../core/enums/study-level.enum';
 import { University } from '../../../core/enums/university.enum';
 import { DiplomaDto } from '../../../core/models/diploma.dto';
+import { SelectButton } from "primeng/selectbutton";
 
 @Component({
   selector: 'app-complete-profile',
@@ -53,6 +54,7 @@ export class CompleteProfile implements OnInit {
   studentDto: StudentDto = new StudentDto();
 
   academicProfile: AcademicProfileDto = {
+    gender: null,
     currentDiploma: this.createEmptyDiploma(),
     diplomas: [],
     customAttributes: {}
@@ -244,4 +246,10 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
       }
     });
   }
+
+  genderOptions = [
+  { label: 'Male', value: 'MALE' },
+  { label: 'Female', value: 'FEMALE' }
+];
+
 }
