@@ -107,12 +107,12 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
   createEmptyDiploma(): DiplomaDto {
     return {
       university: null,
-      ecole: '',
+      school: '',
       studyLevel: null,
-      filiere: '',
-      intitule: '',
+      studyField: '',
+      title: '',
       year: null,
-      note: null
+      grade: null
     };
   }
 
@@ -206,10 +206,10 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
     this.errorMessages = [];
 
     if (!d.university) this.errorMessages.push('University is required');
-    if (!d.ecole) this.errorMessages.push('School is required');
+    if (!d.school) this.errorMessages.push('School is required');
     if (!d.studyLevel) this.errorMessages.push('Level is required');
-    if (!d.filiere) this.errorMessages.push('Field of study is required');
-    if (!d.intitule) this.errorMessages.push('Diploma title is required');
+    if (!d.studyField) this.errorMessages.push('Field of study is required');
+    if (!d.title) this.errorMessages.push('Diploma title is required');
 
     if (strict) {
       if (!d.year || d.year < 1950 || d.year > new Date().getFullYear()) {
@@ -217,7 +217,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
       }
     }
 
-    if (d.note !== null && (d.note < 0 || d.note > 20)) {
+    if (d.grade !== null && (d.grade < 0 || d.grade > 20)) {
       this.errorMessages.push('Grade must be between 0 and 20');
     }
 

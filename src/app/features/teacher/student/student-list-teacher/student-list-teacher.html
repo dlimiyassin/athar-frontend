@@ -30,8 +30,8 @@
             'user.firstName',
             'user.lastName',
             'user.email',
-            'academicProfile.currentDiploma.ecole',
-            'academicProfile.currentDiploma.intitule'
+            'academicProfile.currentDiploma.school',
+            'academicProfile.currentDiploma.title'
         ]"
         [tableStyle]="{ 'min-width': '50rem' }"
     >
@@ -69,7 +69,7 @@
 
                 <th>
                     <p-columnFilter
-                        field="academicProfile.currentDiploma.ecole"
+                        field="academicProfile.currentDiploma.school"
                         type="text"
                         placeholder="Search school">
                     </p-columnFilter>
@@ -77,7 +77,7 @@
 
                 <th>
                     <p-columnFilter
-                        field="academicProfile.currentDiploma.intitule"
+                        field="academicProfile.currentDiploma.title"
                         type="text"
                         placeholder="Search program">
                     </p-columnFilter>
@@ -117,11 +117,11 @@
                 </td>
 
                 <td>
-                    {{ student.academicProfile?.currentDiploma?.ecole || '-' }}
+                    {{ student.academicProfile?.currentDiploma?.school || '-' }}
                 </td>
 
                 <td>
-                    {{ student.academicProfile?.currentDiploma?.intitule || '-' }}
+                    {{ student.academicProfile?.currentDiploma?.title || '-' }}
                 </td>
 
                 <td>

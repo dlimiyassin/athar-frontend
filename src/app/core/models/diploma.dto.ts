@@ -3,10 +3,10 @@ import { StudyLevel } from '../enums/study-level.enum';
 
 export class DiplomaDto {
   university!: University | null;;
-  ecole!: string;
+  school!: string;
   studyLevel!: StudyLevel  | null;;
-  filiere!: string;
-  intitule!: string;
+  studyField!: string;
+  title!: string;
   year!: number  | null;;
-  note!: number | null;
+  grade!: number | null;
 }
