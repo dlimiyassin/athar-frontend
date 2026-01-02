@@ -25,7 +25,8 @@ import { UserService } from '../../../zBase/security/service/user.service';
 import { StudyLevel } from '../../../core/enums/study-level.enum';
 import { University } from '../../../core/enums/university.enum';
 import { DiplomaDto } from '../../../core/models/diploma.dto';
-import { SelectButton } from "primeng/selectbutton";
+import { School } from '../../../core/enums/school.enum';
+import { FieldOfStudy } from '../../../core/enums/field-of-study.enum';
 
 @Component({
   selector: 'app-complete-profile',
@@ -45,6 +46,35 @@ import { SelectButton } from "primeng/selectbutton";
   templateUrl: './complete-profile.html'
 })
 export class CompleteProfile implements OnInit {
+bacKeys = [
+  FieldOfStudy.SCIENCES_MATH_A as string,
+  FieldOfStudy.SCIENCES_MATH_B as string,
+  FieldOfStudy.SCIENCES_PHYSIQUES as string,
+  FieldOfStudy.SVT as string,
+  FieldOfStudy.SCIENCES_ECO_SOCIALES as string,
+  FieldOfStudy.LETTRES_SCIENCES_HUMAINES as string,
+  FieldOfStudy.LANGUES as string,
+  FieldOfStudy.SCIENCES_EXPERIMENTALES as string,
+  FieldOfStudy.STMG as string,
+  FieldOfStudy.BAC_PRO_COMMERCE as string,
+  FieldOfStudy.BAC_PRO_TECHNIQUE as string
+];
+
+
+getBacOptions = (fields: { label: string; value: string }[]) =>
+  fields.filter(f => this.bacKeys.includes(f.label));
+
+getNonBacFieldsOfStudy = (fields: { label: string; value: string }[]) =>
+  fields.filter(f => !this.bacKeys.includes(f.label));
+
+
+
+excludeBacLevels(level: { label: string; value: string; }[]): any[]|null|undefined {
+  return level.filter(option => option.value !== 'BAC');
+}
+
+
+
 
   isLoading = false;
   currentStep = 2;
@@ -64,12 +94,27 @@ export class CompleteProfile implements OnInit {
 
   academicFields: AcademicProfileFieldDto[] = [];
 
-  universities = Object.values(University).map(v => ({
-    label: v.replaceAll('_', ' '),
-    value: v
+  universities = Object.entries(University).map(([key, value]) => ({
+    label: value,
+    value: key
   }));
 
-  levels = Object.values(StudyLevel);
+  schools = Object.entries(School).map(([key, value]) => ({
+    label: `(${key}) : ${value}`,
+    value: key
+  }));
+
+  fieldsOfStudy = Object.entries(FieldOfStudy).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+
+levels = Object.entries(StudyLevel).map(([key, value]) => ({
+  label: value,
+  value: key
+}));
+
+
   fieldType = FieldType;
 
   constructor(
@@ -109,9 +154,9 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
   createEmptyDiploma(): DiplomaDto {
     return {
       university: null,
-      school: '',
+      school: null,
       studyLevel: null,
-      studyField: '',
+      studyField: null,
       title: '',
       year: null,
       grade: null
@@ -204,25 +249,28 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
     return this.errorMessages.length === 0;
   }
 
-  validateDiploma(d: DiplomaDto, strict: boolean): boolean {
+  validateDiploma(d: DiplomaDto, isCurrent : boolean): boolean {
     this.errorMessages = [];
 
-    if (!d.university) this.errorMessages.push('University is required');
     if (!d.school) this.errorMessages.push('School is required');
     if (!d.studyLevel) this.errorMessages.push('Level is required');
     if (!d.studyField) this.errorMessages.push('Field of study is required');
-    if (!d.title) this.errorMessages.push('Diploma title is required');
+    
+    if(!isCurrent) {
+      if (d.studyLevel !== StudyLevel.BAC) {
+        if (!d.university) this.errorMessages.push('University is required');
+        if (!d.title) this.errorMessages.push('Diploma title is required');
+      }
 
-    if (strict) {
       if (!d.year || d.year < 1950 || d.year > new Date().getFullYear()) {
         this.errorMessages.push('Year is invalid');
       }
+  
+      if (d.grade !== null && (d.grade < 0 || d.grade > 20)) {
+        this.errorMessages.push('Grade must be between 0 and 20');
+      }
     }
-
-    if (d.grade !== null && (d.grade < 0 || d.grade > 20)) {
-      this.errorMessages.push('Grade must be between 0 and 20');
-    }
-
+      
     return this.errorMessages.length === 0;
   }
 
