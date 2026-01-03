@@ -1,24 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { ExportImportService } from '../../../core/services/export-import.service';
+import { ExportImportService } from '../../../core/import-export/service/export-import.service';
+import { PredictionType } from '../../../core/import-export/models/prediction.type.model';
+import { Select } from "primeng/select";
+import { PredictionConfigService } from '../../../core/import-export/service/prediction.config.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-export-import',
   standalone: true,
-  imports: [],
+  imports: [Select, FormsModule],
   templateUrl: './export-import.html',
   styleUrl: './export-import.css',
 })
-export class ExportImport {
+export class ExportImport implements OnInit {
 
   exporting = false;
   importing = false;
 
   selectedFile: File | null = null;
 
+  predictionTypes: PredictionType[] = [];
+  selectedPredictionTypeId: string | null = null;
+
   constructor(
-    private exportImportService: ExportImportService
+    private exportImportService: ExportImportService,
+    private predictionConfigService: PredictionConfigService
   ) {}
+
+  /* =========================
+     INIT
+     ========================= */
+  ngOnInit(): void {
+    this.loadPredictionTypes();
+  }
+
+  private loadPredictionTypes(): void {
+    this.predictionConfigService.getActivePredictionTypes()
+      .subscribe({
+        next: (types) => {
+          this.predictionTypes = types;
+          console.log('Loaded prediction types:', types);
+          
+        },
+        error: () => {
+          alert('Failed to load prediction types.');
+        }
+      });
+  }
 
   /* =========================
      EXPORT
@@ -47,7 +76,7 @@ export class ExportImport {
   }
 
   /* =========================
-     IMPORT (UI ONLY FOR NOW)
+     IMPORT
      ========================= */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -57,11 +86,29 @@ export class ExportImport {
   }
 
   importFile(): void {
-    if (!this.selectedFile) {
+    if (!this.selectedFile || !this.selectedPredictionTypeId) {
       return;
     }
 
-    // Backend logic will be added later
-    alert('Import logic will be implemented later.');
+    this.importing = true;
+
+    console.log('selected PredictionTypeId:', this.selectedPredictionTypeId);
+
+    this.exportImportService
+      .importPredictionsCsv(
+        this.selectedFile,
+        this.selectedPredictionTypeId
+      )
+      .pipe(finalize(() => this.importing = false))
+      .subscribe({
+        next: () => {
+          alert('Predictions imported successfully.');
+          this.selectedFile = null;
+          this.selectedPredictionTypeId = null;
+        },
+        error: () => {
+          alert('Failed to import predictions.');
+        }
+      });
   }
 }

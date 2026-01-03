@@ -1,50 +1,90 @@
-<div class="space-y-6">
+<div class="space-y-8">
 
   <!-- Header -->
-  <div class="header">
-    <h1>Survey Data Management</h1>
+  <div class="text-center md:text-left">
+    <h1 class="text-2xl font-semibold text-gray-800">
+      Survey Data Management
+    </h1>
+
+    <p class="text-gray-500 mt-1 max-w-3xl">
+      Export survey data for AI analysis and import prediction results back into the system.
+    </p>
   </div>
 
-  <div class="sections">
+  <!-- Sections -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10"
+  >
 
     <!-- EXPORT -->
-    <div class="card">
-      <h2>Export Data</h2>
-      <p class="description">
-        Download all student survey responses in CSV format.
-        This file includes academic profile fields and survey answers.
-      </p>
+    <div
+      class="card p-5 rounded-2xl border bg-white shadow-sm flex flex-col justify-between"
+    >
+      <div class="space-y-3">
+        <h2 class="text-lg font-medium text-gray-800">
+          Export Data
+        </h2>
+
+        <p class="text-gray-500 text-sm leading-relaxed">
+          Download anonymized academic data and survey responses for AI processing.
+        </p>
+      </div>
 
       <button
-        class="primary-btn"
+        class="mt-5 primary-btn py-2.5 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition"
         (click)="exportStudentsSurveys()"
         [disabled]="exporting"
       >
-        {{ exporting ? 'Exporting...' : 'Export Surveys CSV' }}
+        {{ exporting ? 'Exporting…' : 'Export Surveys CSV' }}
       </button>
     </div>
 
     <!-- IMPORT -->
-    <div class="card">
-      <h2>Import Data</h2>
-      <p class="description">
-        Upload an Excel or CSV file to feed survey data into the system.
-        Import validation and preview will be added later.
-      </p>
+    <div
+      class="card p-5 rounded-2xl border bg-white shadow-sm"
+    >
+      <h2 class="text-lg font-medium text-gray-800 mb-4">
+        Import AI Predictions
+      </h2>
+
+      <!-- Prediction Type -->
+      <label class="label block text-sm text-gray-600 mb-1">
+        Prediction Type
+      </label>
+
+      <p-select 
+      [options]="predictionTypes" 
+      [(ngModel)]="selectedPredictionTypeId" 
+      [checkmark]="true" 
+      optionLabel="label" 
+      optionValue="id"
+      [showClear]="true" 
+      placeholder="Select a Prediction Type" 
+      class="w-full mb-4" />
+
+      <!-- File -->
+      <label class="label block text-sm text-gray-600 mb-1">
+        Prediction File (CSV)
+      </label>
 
       <input
+        class="w-full mb-4 py-2 px-3 rounded-lg border border-gray-300 hover:cursor-pointer"
         type="file"
-        accept=".csv,.xlsx"
+        accept=".csv"
         (change)="onFileSelected($event)"
       />
 
       <button
-        class="secondary-btn"
-        [disabled]="!selectedFile || importing"
+        class="primary-btn w-full py-2 rounded-lg border border-gray-600 hover:bg-[#10b981] hover:text-white hover:cursor-pointer transition"
+        [disabled]="!selectedFile || !selectedPredictionTypeId || importing"
         (click)="importFile()"
       >
-        Import File
+        {{ importing ? 'Importing…' : 'Import Predictions' }}
       </button>
+
+      <p class="hint text-xs text-gray-400 mt-3">
+        The CSV must contain exactly one additional column for the selected prediction type.
+      </p>
     </div>
 
   </div>
