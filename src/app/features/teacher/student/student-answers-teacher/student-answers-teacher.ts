@@ -14,6 +14,7 @@ import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule } from 'primeng/paginator';
+import { timeout } from 'rxjs/internal/operators/timeout';
 
 @Component({
   selector: 'app-student-answers-teacher',
@@ -57,9 +58,11 @@ export class StudentAnswersTeacher implements OnInit {
   private loadSurveys(): void {
     this.surveyService.findByTeacher().subscribe({
       next: surveys => {
-        this.surveys = surveys;
-        this.updatePagedSurveys();
-        this.loadingSurveys = false;
+        setTimeout(() => {
+          this.surveys = surveys;
+          this.updatePagedSurveys();
+          this.loadingSurveys = false;
+        }, 300);
       },
       error: () => this.loadingSurveys = false
     });
