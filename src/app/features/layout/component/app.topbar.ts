@@ -1,16 +1,36 @@
-import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
-// import { AppConfigurator } from './app.configurator';
+
 import { LayoutService } from '../service/layout.service';
 import { AuthService } from '../../../zBase/security/service/auth.service';
+import { UserDto } from '../../../zBase/security/model/userDto.model';
+import { UserService } from '../../../zBase/security/service/user.service';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
     imports: [RouterModule, CommonModule, StyleClassModule],
+    styles: [`
+        .dropdown-item {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #374151;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+        }
+
+    `],
     template: ` 
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
@@ -38,51 +58,170 @@ import { AuthService } from '../../../zBase/security/service/auth.service';
                 <span>ATHAR</span>
             </a>
         </div>
-
+    
         <div class="layout-topbar-actions">
-            <div class="layout-topbar-menu hidden lg:block">
-                <div class="layout-topbar-menu-content">
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-user"></i>
-                        <span>Profile</span>
-                    </button>
-                      
-                    <button (click)="logout()" 
-                        class="inline-flex
-                        items-center
-                        justify-center
-                        px-4
-                        w-fit
-                        h-10
-                        rounded-full
-                        cursor-pointer
-                        text-gray-700
-                        transition-colors
-                        duration-200
-                        hover:bg-gray-200
-                        focus-visible:outline-none
-                        focus-visible:ring-2
-                        focus-visible:ring-gray-400
-                        focus-visible:ring-offset-2">
-                        <i class="pi pi-sign-out me-2"></i>
-                        Logout
-                    </button>
+    
+                <!-- Desktop -->
+                <div class="hidden lg:flex items-center gap-4">
+
+                    <!-- User Identity -->
+                    <div
+                        class="relative cursor-pointer select-none"
+                        (click)="toggleUserMenu()"
+                        style="display: flex; align-items: center; gap: 0.75rem;"
+                    >
+                        <!-- Avatar -->
+                        <div
+                            class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-semibold"
+                        >
+                            {{ userInitials }}
+                        </div>
+
+                        <!-- Name + Role -->
+                        <div class="text-left leading-tight">
+                            <div class="text-sm font-semibold text-gray-800">
+                                {{ userName }}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                {{ userRole }}
+                            </div>
+                        </div>
+
+                        <i class="pi pi-chevron-down text-xs text-gray-500"></i>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div
+                        *ngIf="userMenuOpen"
+                        class="absolute right-6 top-16 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50"
+                    >
+                        <button
+                            class="dropdown-item"
+                            routerLink="/profile"
+                            (click)="closeUserMenu()"
+                        >
+                            <i class="pi pi-user"></i>
+                            Profile
+                        </button>
+
+                        <button
+                            class="dropdown-item"
+                            (click)="logout()"
+                        >
+                            <i class="pi pi-sign-out"></i>
+                            Logout
+                        </button>
+                    </div>
+
                 </div>
+
+                <!-- Mobile -->
+                <div class="lg:hidden">
+                    <button
+                        class="layout-topbar-action"
+                        (click)="toggleUserMenu()"
+                    >
+                        <i class="pi pi-user"></i>
+                    </button>
+
+                    <div
+                        *ngIf="userMenuOpen"
+                        class="absolute right-4 top-16 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-50"
+                    >
+                        <div class="px-4 py-3 border-b">
+                            <div class="text-sm font-semibold text-gray-800">
+                                {{ userName }}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                {{ userRole }}
+                            </div>
+                        </div>
+
+                        <button
+                            class="dropdown-item"
+                            routerLink="/profile"
+                            (click)="closeUserMenu()"
+                        >
+                            Profile
+                        </button>
+
+                        <button
+                            class="dropdown-item"
+                            (click)="logout()"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
             </div>
-        </div>
+
+
+        
     </div>`
 })
-export class AppTopbar {
-    items!: MenuItem[];
+export class AppTopbar implements OnInit {
 
-    constructor(public layoutService: LayoutService,  private authService: AuthService,) {}
+    userMenuOpen = false;
 
-    
-    logout() {
-        this.authService.logout();
+    user!: UserDto;
+    userName = '';
+    userRole = '';
+    userInitials = '';
+
+    constructor(
+        public layoutService: LayoutService,
+        private authService: AuthService,
+        private userService: UserService
+    ) {}
+
+    ngOnInit(): void {
+        this.loadUserInfo();
     }
     
-    // toggleDarkMode() {
-    //     this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
-    // }
+    loadUserInfo(): void {
+        this.userService.loadAuthenticatedUser().subscribe({
+            next: user => {
+                this.user = user;
+                this.updateUserDetails();
+            },
+            error: () => {
+                console.log('Error loading user info in topbar');
+            }
+        });
+    }
+
+    updateUserDetails(): void {
+        if (!this.user) return;
+
+        this.userName = `${this.user.firstName ?? ''} ${this.user.lastName ?? ''}`.trim();
+        this.userRole = this.authService.getRoleName(this.user.roleDtos);
+
+        this.userInitials = this.userName
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
+    }
+
+    toggleUserMenu(): void {
+        this.userMenuOpen = !this.userMenuOpen;
+    }
+
+    closeUserMenu(): void {
+        this.userMenuOpen = false;
+    }
+
+    logout(): void {
+        this.authService.logout();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onOutsideClick(event: MouseEvent): void {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.layout-topbar-actions')) {
+            this.userMenuOpen = false;
+        }
+    }
 }
