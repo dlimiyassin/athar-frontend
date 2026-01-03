@@ -13,6 +13,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-student-answers-teacher',
@@ -24,7 +25,8 @@ import { SkeletonModule } from 'primeng/skeleton';
     AccordionModule,
     TagModule,
     DividerModule,
-    SkeletonModule
+    SkeletonModule,
+    PaginatorModule
   ],
   templateUrl: './student-answers-teacher.html',
   styleUrl: './student-answers-teacher.css',
@@ -32,11 +34,16 @@ import { SkeletonModule } from 'primeng/skeleton';
 export class StudentAnswersTeacher implements OnInit {
 
   surveys: SurveyDto[] = [];
+  pagedSurveys: SurveyDto[] = [];
   selectedSurvey: SurveyDto | null = null;
 
   responses: SurveyResponseDto[] = [];
   loadingSurveys = true;
   loadingResponses = false;
+
+  // Pagination state
+  pageSize = 3;
+  pageIndex = 0;
 
   constructor(
     private surveyService: SurveyService,
@@ -51,10 +58,23 @@ export class StudentAnswersTeacher implements OnInit {
     this.surveyService.findByTeacher().subscribe({
       next: surveys => {
         this.surveys = surveys;
+        this.updatePagedSurveys();
         this.loadingSurveys = false;
       },
       error: () => this.loadingSurveys = false
     });
+  }
+
+  onPageChange(event: any): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
+    this.updatePagedSurveys();
+  }
+
+  private updatePagedSurveys(): void {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.pagedSurveys = this.surveys.slice(start, end);
   }
 
   selectSurvey(survey: SurveyDto): void {
@@ -66,17 +86,34 @@ export class StudentAnswersTeacher implements OnInit {
     this.loadingResponses = true;
     this.responseService.findBySurvey(surveyId).subscribe({
       next: responses => {
-        this.responses = responses;
-        this.loadingResponses = false;
+        setTimeout(() => {
+          this.responses = responses;
+          this.loadingResponses = false;
+
+        }, 300);
       },
       error: () => this.loadingResponses = false
     });
   }
 
-  answersForQuestion(question: QuestionDto) {
-    return this.responses.flatMap(r =>
-      r.answers.filter(a => a.questionId === question.id)
-    );
+  /* =========================
+     Aggregated answers
+     ========================= */
+  aggregatedAnswers(question: QuestionDto): { value: string; count: number }[] {
+    const map = new Map<string, number>();
+
+    this.responses.forEach(response => {
+      response.answers
+        .filter(a => a.questionId === question.id)
+        .forEach(a => {
+          map.set(a.value, (map.get(a.value) ?? 0) + 1);
+        });
+    });
+
+    return Array.from(map.entries()).map(([value, count]) => ({
+      value,
+      count
+    }));
   }
 
   formatDate(date: string | null): string {
