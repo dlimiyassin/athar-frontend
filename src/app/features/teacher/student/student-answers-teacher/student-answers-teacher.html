@@ -7,6 +7,18 @@
       Survey Responses
     </h1>
 
+      @if (!loadingSurveys && surveys.length === 0) {
+    <div class="mt-10">
+      <p-card class="text-center">
+      
+        <p class="text-lg font-bold text-gray-600">
+          No active surveys available. Let's Create One.
+        </p>
+      
+      </p-card>
+    </div>
+  }
+
     <!-- Surveys Pagination -->
     @if (!loadingSurveys && surveys.length > pageSize) {
       <p-paginator
