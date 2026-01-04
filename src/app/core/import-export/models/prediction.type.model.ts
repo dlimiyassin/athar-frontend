@@ -1,9 +1,10 @@
+import { PredictionValueType } from "./prediction-value-type";
 
 export interface PredictionType {
   id?: string;
   code: string;
   label: string;
-  valueType: 'NUMBER' | 'BOOLEAN' | 'TEXT';
+  valueType: PredictionValueType;
   description: string;
   active: boolean;
 }

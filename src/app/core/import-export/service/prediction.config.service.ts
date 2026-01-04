@@ -32,6 +32,12 @@ export class PredictionConfigService {
     );
   }
 
+  getAllFields(): Observable<FutureFieldOfStudy[]> {
+    return this.http.get<FutureFieldOfStudy[]>(
+      `${this.FIELDS_API}`
+    );
+  }
+
   saveField(field: FutureFieldOfStudy): Observable<FutureFieldOfStudy> {
     return this.http.post<FutureFieldOfStudy>(
       `${this.FIELDS_API}`,
@@ -43,6 +49,10 @@ export class PredictionConfigService {
     return this.http.get<FutureFieldOfStudy>(
       `${this.FIELDS_API}/code/${code}`
     );
+  }
+
+  public deleteField(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.FIELDS_API}/${id}`);
   }
 
 
@@ -63,6 +73,12 @@ export class PredictionConfigService {
     );
   }
 
+  getAllPredictionTypes(): Observable<PredictionType[]> {
+    return this.http.get<PredictionType[]>(
+      `${this.PREDICTIONS_API}`
+    );
+  }
+
   savePredictionType(
     type: PredictionType
   ): Observable<PredictionType> {
@@ -78,5 +94,9 @@ export class PredictionConfigService {
     return this.http.get<PredictionType>(
       `${this.PREDICTIONS_API}/code/${code}`
     );
+  }
+
+  public deletePredictionType(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.PREDICTIONS_API}/${id}`);
   }
 }

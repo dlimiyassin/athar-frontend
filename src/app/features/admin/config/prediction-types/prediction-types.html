@@ -1,1 +1,106 @@
-<p>prediction-types works!</p>
+<p-toast />
+<div class="card space-y-4">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="title">Prediction Types</h1>
+      <p class="subtitle">
+        Configure how imported AI predictions are interpreted.
+      </p>
+    </div>
+
+    <button
+      class="primary-btn"
+      (click)="addNewRow()"
+      [disabled]="hasPendingNewRow()"
+    >
+      + Add
+    </button>
+  </div>
+
+  <p-table
+    [value]="predictionTypes"
+    editMode="cell"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '75rem' }"
+  >
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Code</th>
+        <th>Label</th>
+        <th>Description</th>
+        <th>Value Type</th>
+        <th class="text-center">Active</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-type>
+      <tr>
+
+        <!-- Code -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="type.code"
+            (blur)="onCellEditComplete(type)"
+            [ngClass]="{ 'invalid-cell': !type.code }"
+          />
+        </td>
+
+        <!-- Label -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="type.label"
+            (blur)="onCellEditComplete(type)"
+            [ngClass]="{ 'invalid-cell': !type.label }"
+          />
+        </td>
+
+        <!-- Description -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="type.description"
+            (blur)="onCellEditComplete(type)"
+          />
+        </td>
+
+        <!-- Value Type -->
+        <td pEditableColumn>
+          <p-select
+            [options]="valueTypes"
+            [(ngModel)]="type.valueType"
+            appendTo="body"
+            panelStyleClass="select-up"
+            (onChange)="onCellEditComplete(type)"
+            [ngClass]="{ 'invalid-cell': !type.valueType }"
+          />
+        </td>
+
+        <!-- Active -->
+        <td class="text-center">
+          <p-toggleswitch
+            [(ngModel)]="type.active"
+            (onChange)="onCellEditComplete(type)"
+          />
+        </td>
+
+        <!-- Actions -->
+        <td class="text-center">
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="deleteRow(type)"
+          ></button>
+        </td>
+
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
