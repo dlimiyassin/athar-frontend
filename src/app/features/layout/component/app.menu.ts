@@ -67,7 +67,6 @@ export class AppMenu {
                 label: 'Teachers',
                 items: [
                     { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/admin/view/teacher-list'] },
-                    { label: 'surveys', icon: 'pi pi-fw pi-list-check', routerLink: ['/app/admin/view/teacher-surveys'] },
                 ]
             },
             {
@@ -77,29 +76,43 @@ export class AppMenu {
                         label: 'List',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/app/admin/view/students-list']
-                    },
-                    {
-                        label: 'Answers',
-                        icon: 'pi pi-fw pi-send',
-                        routerLink: ['/app/admin/view/students-answers']
                     }
                 ]
             },
             {
-                label: 'Configuration',
-                items: [   
-                    {
-                        label: 'Forms',
-                        icon: 'pi pi-fw pi-id-card',
-                        routerLink: ['/app/admin/view/forms']
-                    },                 
-                    {
-                        label: 'Roles',
-                        icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/app/admin/view/roles']
-                    },
+                label: 'Surveys',
+                items: [
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/admin/view/surveys'] },
+                    { label: 'Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/admin/view/surveys/students-answers'] }
                 ]
-            }
+            },
+            {
+                label: 'Configuration',
+                items: [
+                    {
+                        label: 'Registeration Form',
+                        icon: 'pi pi-fw pi-id-card',
+                        routerLink: ['/app/admin/view/config/academic-fields']
+                        
+                    },
+                    {
+                        label: 'Importing Data',
+                        icon: 'pi pi-fw pi-file-import',
+                        items: [                            
+                            {
+                                label: 'Prediction Types',
+                                icon: 'pi pi-fw pi-microchip-ai',
+                                routerLink: ['/app/admin/view/config/prediction-types']
+                            },
+                            {
+                                label: 'Future fields',
+                                icon: 'pi pi-fw pi-chart-line',
+                                routerLink: ['/app/admin/view/config/future-fields']
+                            }
+                        ]
+                    }
+                ]
+            },
         ];
         
         this.modelTeacher = [
@@ -114,35 +127,21 @@ export class AppMenu {
                         label: 'List',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/app/teacher/view/students-list']
-                    },
-                    {
-                        label: 'Answers',
-                        icon: 'pi pi-fw pi-send',
-                        routerLink: ['/app/teacher/view/students-answers']
                     }
                 ]
             },
             {
                 label: 'Surveys',
                 items: [
-                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/teacher/view/surveys'] },
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/teacher/view/surveys'] },                    
+                    { label: 'Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/teacher/view/surveys/students-answers']},
                     { label: 'Create', icon: 'pi pi-fw pi-plus', routerLink: ['/app/teacher/view/surveys/create'] },
-                ]
-            },
-            {
-                label: 'Configuration',
-                items: [                    
-                    {
-                        label: 'Forms',
-                        icon: 'pi pi-fw pi-id-card',
-                        routerLink: ['/app/teacher/view/form-config']
-                    },
                 ]
             },
             {
                 label: 'Export / Import',
                 items: [{ label: 'Export / Import', icon: 'pi pi-fw pi-download', routerLink: ['/app/teacher/view/export-import'] }]
-            },
+            }
         ];
 
         this.modelStudent = [

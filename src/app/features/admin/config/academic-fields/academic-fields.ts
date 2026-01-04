@@ -1,4 +1,5 @@
 
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,12 +12,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { AcademicProfileFieldDto } from '../../../core/models/academic-profile-field.dto';
-import { AcademicFieldsConfigService } from '../../../core/services/academic-fields-config.service';
-import { FieldType } from '../../../core/enums/field-type.enum';
+import { FieldType } from '../../../../core/enums/field-type.enum';
+import { AcademicProfileFieldDto } from '../../../../core/models/academic-profile-field.dto';
+import { AcademicFieldsConfigService } from '../../../../core/services/academic-fields-config.service';
+
 
 @Component({
-  selector: 'app-academic-fields-config',
+  selector: 'app-academic-fields',
   imports: [
     CommonModule,
     FormsModule,
@@ -30,10 +32,10 @@ import { FieldType } from '../../../core/enums/field-type.enum';
   ],
   standalone: true,
   providers: [MessageService],
-  templateUrl: './academic-fields-config.html',
-  styleUrl: './academic-fields-config.css',
+  templateUrl: './academic-fields.html',
+  styleUrl: './academic-fields.css',
 })
-export class AcademicFieldsConfig implements OnInit {
+export class AcademicFields implements OnInit {
 
   fields: AcademicProfileFieldDto[] = [];
   selectedFields : AcademicProfileFieldDto[] = [];
