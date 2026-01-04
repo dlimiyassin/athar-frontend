@@ -1,1 +1,85 @@
-<p>survey-list-admin works!</p>
+<div class="space-y-6">
+  
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+
+  <div class="flex flex-row justify-between items-start">
+    <h2 class="text-2xl font-semibold">Surveys</h2>
+    <button
+      pButton
+      icon="pi pi-plus"
+      label="Create Survey"
+      (click)="router.navigate(['app/admin/view/surveys/create'])"
+      class="p-button-primary"
+    ></button>
+  </div>
+
+  <p-table
+    [value]="surveys"
+    [loading]="loading"
+    class="shadow rounded-2xl"
+    [paginator]="true"
+    [rows]="5"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Target</th>
+        <th>Created At</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-survey>
+      <tr>
+        <td class="font-medium">{{ survey.title }}</td>
+
+        <td class="text-gray-600">
+          {{ survey.description || '-' }}
+        </td>
+
+        <td>
+          <span class="px-2 py-1 bg-gray-100 rounded">
+            {{ survey.target || '—' }}
+          </span>
+        </td>
+
+        <td>
+          {{ survey.createdAt | date:'medium' }}
+        </td>
+
+        <td class="flex gap-2 justify-start items-center">
+          <button
+            pButton
+            icon="pi pi-eye"
+            class="p-button-text"
+            (click)="onView(survey)"
+            pTooltip="View Survey"
+          ></button>
+<button
+  pButton
+  icon="pi pi-trash"
+  class="p-button-text p-button-danger"
+  (click)="confirmDelete(survey)"
+  pTooltip="Delete Survey"
+></button>
+
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty state -->
+    @if (!loading) {
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center py-8 text-gray-500">
+            No surveys found. Create your first survey to get started.
+          </td>
+        </tr>
+      </ng-template>
+    }
+  </p-table>
+</div>
+
+<p-confirmDialog></p-confirmDialog>

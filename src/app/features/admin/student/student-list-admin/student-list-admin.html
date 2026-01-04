@@ -1,154 +1,141 @@
-<!-- Caption / Global Search -->
-<div class="mb-6">
-    <div class="flex">
-        <div class="text-3xl font-bold">Students</div>
-        <p-iconfield iconPosition="left" class="ml-auto">
-            <p-inputicon>
-                <i class="pi pi-search"></i>
-            </p-inputicon>
-            <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                placeholder="Search student..."
-            />
-        </p-iconfield>
-    </div>
+<!-- Header -->
+<div class="mb-1 flex items-center gap-3">
+  <h2 class="text-3xl font-bold">Students</h2>
+  <p-tag
+    class="bg-athar-light text-athar border-athar mb-2"
+    [value]="'Total of '+students.length">
+  </p-tag>
+
+  <p-iconfield iconPosition="left" class="ml-auto">
+    <p-inputicon>
+      <i class="pi pi-search"></i>
+    </p-inputicon>
+    <input
+      pInputText
+      type="text"
+      (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+      placeholder="Search student..." />
+  </p-iconfield>
 </div>
 
 <div class="card">
-    
-    <p-table
-        #dt
-        [value]="students"
-        dataKey="id"
-        [rows]="10"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="loading"
-        [paginator]="true"
-        [globalFilterFields]="[
-            'user.firstName',
-            'user.lastName',
-            'user.email',
-            'academicProfile.currentDiploma.school',
-            'academicProfile.currentDiploma.title'
-        ]"
-        [tableStyle]="{ 'min-width': '50rem' }"
-    >
+  <p-table
+    #dt
+    [value]="students"
+    dataKey="id"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="loading"
+    [paginator]="true"
+    [rowHover]="true"
+    [globalFilterFields]="[
+      'user.firstName',
+      'user.lastName',
+      'user.email',
+      'academicProfile.currentDiploma.school',
+      'academicProfile.currentDiploma.title'
+    ]"
+    class="student-table">
 
+    <!-- Header -->
+    <ng-template #header>
+      <tr>
+        <th>Student</th>
+        <th>Level</th>
+        <th>School</th>
+        <th>Program</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th class="text-center">Actions</th>
+      </tr>
 
-        <!-- Header -->
-        <ng-template #header>
-            <tr>
-                <th style="width:20%">Full Name</th>
-                <th style="width:20%">Email</th>
-                <th style="width:20%">School</th>
-                <th style="width:20%">Program</th>
-                <th style="width:20%">Status</th>
-                <!--<th style="width:10%">Enabled</th>-->
-            </tr>
+      <!-- Filters -->
+      <tr>
+        <th></th>
+        <th></th>
+        <th>
+            <!-- <p-columnFilter
+            field="academicProfile.currentDiploma.school"
+            type="text"
+            placeholder="School" /> -->
+        </th>
+        <th>
+            <p-columnFilter
+            field="academicProfile.currentDiploma.title"
+            type="text"
+            placeholder="Program" />
+        </th>
+        <th>
+          <p-columnFilter field="user.email" type="text" placeholder="Email" />
+        </th>
+        <th>
+          <p-columnFilter field="user.status" matchMode="equals" [showMenu]="false">
+            <ng-template #filter let-filter="filterCallback">
+              <p-select
+                [options]="userStatuses"
+                placeholder="Any"
+                [showClear]="true"
+                (onChange)="filter($event.value)">
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
 
-            <!-- Filters -->
-            <tr>
-                <th>
-                    <p-columnFilter
-                        field="user.firstName"
-                        type="text"
-                        placeholder="Search name"
-                        filterOn="input">
-                    </p-columnFilter>
-                </th>
+    <!-- Body -->
+    <ng-template #body let-student>
+      <tr class="student-row">
+        <!-- Avatar + Name -->
+        <td>
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              {{ getInitial(student) }}
+            </div>
+            <div class="leading-tight">
+              <div class="font-medium">
+                {{ student.user.firstName }} {{ student.user.lastName }}
+              </div>
+            </div>
+          </div>
+        </td>
+        
+        <td>
+            {{ student.academicProfile?.currentDiploma?.studyLevel || '-' }}
+        </td>
 
-                <th>
-                    <p-columnFilter
-                        field="user.email"
-                        type="text"
-                        placeholder="Search email">
-                    </p-columnFilter>
-                </th>
+        <td>{{ student.academicProfile?.currentDiploma?.school || '-' }}</td>
+        
+        <td>{{ student.academicProfile?.currentDiploma?.title || '-' }}</td>
 
-                <th>
-                    <p-columnFilter
-                        field="academicProfile.currentDiploma.school"
-                        type="text"
-                        placeholder="Search school">
-                    </p-columnFilter>
-                </th>
+        <td>{{ student.user.email }}</td>
 
-                <th>
-                    <p-columnFilter
-                        field="academicProfile.currentDiploma.title"
-                        type="text"
-                        placeholder="Search program">
-                    </p-columnFilter>
-                </th>
+        <td>
+          <p-tag
+            [value]="student.user.status.toString()"
+            [severity]="getUserStatusSeverity(student.user.status.toString())">
+          </p-tag>
+        </td>
 
-                <th>
-                    <p-columnFilter
-                        field="user.status"
-                        matchMode="equals"
-                        [showMenu]="false">
-                        <ng-template #filter let-filter="filterCallback">
-                            <p-select
-                                [options]="userStatuses"
-                                placeholder="Any"
-                                [showClear]="true"
-                                (onChange)="filter($event.value)">
-                            </p-select>
-                        </ng-template>
-                    </p-columnFilter>
-                </th>
+        <!-- Actions -->
+        <td class="text-center">
+          <div class="flex justify-center gap-2">
+            <button pButton icon="pi pi-eye" class="p-button-text p-button-sm"></button>
+            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
 
-                <!-- <th>
-                    <p-columnFilter type="boolean" field="user.enabled"></p-columnFilter>
-                </th> -->
-            </tr>
-        </ng-template>
-
-        <!-- Body -->
-        <ng-template #body let-student>
-            <tr>
-                <td>
-                    {{ student.user.firstName }} {{ student.user.lastName }}
-                </td>
-
-                <td>
-                    {{ student.user.email }}
-                </td>
-
-                <td>
-                    {{ student.academicProfile?.currentDiploma?.school || '-' }}
-                </td>
-
-                <td>
-                    {{ student.academicProfile?.currentDiploma?.title || '-' }}
-                </td>
-
-                <td>
-                    <p-tag
-                        [value]="student.user.status.toString()"
-                        [severity]="getUserStatusSeverity(student.user.status.toString())">
-                    </p-tag>
-                </td>
-
-                <!-- <td class="text-center">
-                    <i
-                        class="pi"
-                        [ngClass]="{
-                            'pi-check-circle text-green-500': student.user.enabled,
-                            'pi-times-circle text-red-500': !student.user.enabled
-                        }">
-                    </i>
-                </td> -->
-            </tr>
-        </ng-template>
-
-        <!-- Empty -->
-        <ng-template #emptymessage>
-            <tr>
-                <td colspan="6">No students found.</td>
-            </tr>
-        </ng-template>
-
-    </p-table>
+    <!-- Empty -->
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7" class="text-center py-6 text-gray-500">
+          No students found.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

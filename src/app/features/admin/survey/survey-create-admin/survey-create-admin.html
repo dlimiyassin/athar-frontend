@@ -1,0 +1,50 @@
+<p-toast />
+
+<div class="space-y-6 ">
+
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-semibold">Create New Survey</h1>
+    <button
+      pButton
+      label="Save"
+      icon="pi pi-check"
+      [loading]="isSaving"
+      (click)="save()">
+    </button>
+  </div>
+
+  <section class="p-6 space-y-4 bg-white shadow rounded-2xl">
+
+    <div>
+      <label class="text-sm font-medium">Title *</label>
+      <input
+        pInputText
+        class="w-full mt-1"
+        placeholder="Survey title"
+        [(ngModel)]="survey.title" />
+    </div>
+
+    <div>
+      <label class="text-sm font-medium">Target Audience *</label>
+      <p-select
+        class="w-full mt-1"
+        [options]="targetTypes"
+        [(ngModel)]="survey.target"
+        placeholder="Select target">
+      </p-select>
+    </div>
+
+    <div>
+      <label class="text-sm font-medium">Description</label>
+      <textarea
+        pInputText
+        rows="4"
+        class="w-full mt-1"
+        placeholder="Optional description"
+        [(ngModel)]="survey.description">
+      </textarea>
+    </div>
+
+  </section>
+
+</div>

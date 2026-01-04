@@ -1,0 +1,215 @@
+<p-toast />
+@if (!loading) {
+  <div class="space-y-8">
+  
+    <!-- Survey Info -->
+    <section class="bg-white rounded-2xl shadow p-6 space-y-4">
+      <div class="flex flex-row justify-between items-start">
+        <h2 class="text-xl font-semibold">Survey Information</h2>
+        <button
+          pButton
+          icon="pi pi-save"
+          label="Save"
+          size="large"
+          [rounded]="true" 
+          (click)="saveSurvey()">
+        </button>
+
+      </div>
+  
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  
+        <div>
+          <label class="text-sm font-medium">Title</label>
+          <input
+            pInputText
+            [(ngModel)]="survey.title"
+            class="w-full mt-1" />
+        </div>
+  
+        <div>
+          <label class="text-sm font-medium">Target</label>
+          <p-select
+            [options]="targetTypes"
+            [(ngModel)]="survey.target"
+            class="w-full mt-1">
+          </p-select>
+        </div>
+  
+        <div class="md:col-span-2">
+          <label class="text-sm font-medium">Description</label>
+          <textarea
+            pInputText
+            rows="3"
+            [(ngModel)]="survey.description"
+            class="w-full mt-1">
+          </textarea>
+        </div>
+  
+      </div>
+    </section>
+  
+    <!-- Questions -->
+    <section class="bg-white rounded-2xl shadow p-6">
+        
+      <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Questions</h2>
+
+            <button
+              pButton
+              label="{{showNewQuestionForm ? 'Save Question' : 'Add New Question'}}"
+              [icon]="showNewQuestionForm ? 'pi pi-check' : 'pi pi-plus'"
+              class=" p-button-rounded p-button-text"
+              (click)="toggleQuestionForm()">
+            </button>
+        </div>
+
+        @if (showNewQuestionForm) {
+          <div class="mb-6 border rounded-lg p-4 space-y-4">
+            <div>
+              <label class="text-md font-medium">Label</label>
+              <input
+                pInputText
+                [(ngModel)]="newQuestion.label"
+                class="w-full mt-1" />
+            </div>
+          
+            <div>
+              <label class="text-md font-medium">Type</label>
+              <p-select
+                [options]="questionTypes"
+                [(ngModel)]="newQuestion.type"
+                class="w-full mt-1">
+              </p-select>
+            </div>
+          
+            @if (isOptionsBased(newQuestion.type)) {
+              <div class="space-y-2">
+                <label class="text-sm font-medium me-2">Options</label>
+              
+                @for (opt of newQuestion.options; track $index) {
+                  <div class="flex gap-2">
+                    <input
+                      pInputText
+                      [(ngModel)]="newQuestion.options[$index]"
+                      class="flex-1" />
+                  
+                    <button
+                      pButton
+                      icon="pi pi-trash"
+                      class="p-button-text p-button-danger"
+                      (click)="newQuestion.options.splice($index, 1)">
+                    </button>
+                  </div>
+                }
+              
+                <button
+                  pButton
+                  icon="pi pi-plus"
+                  label="Add Option"
+                  class="p-button-sm"
+                  (click)="newQuestion.options.push('')">
+                </button>
+              </div>
+            }
+          </div>
+        }
+  
+
+
+
+
+
+
+
+      <!-- Questions Accordion -->
+      <p-accordion [multiple]="true">
+  
+        @for (q of survey.questions; track $index) {
+          
+          <p-accordion-panel [value]="$index">
+            <p-accordion-header><h4 class="font-medium text-sm">{{'Question ' + ($index + 1)}}</h4></p-accordion-header>
+            
+            <!-- Question Table -->
+              <p-accordion-content class="ps-14">
+                <p-table [value]="[q]" class="mb-6">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="text-xl font-medium">Label</th>
+                    <th class="text-xl font-medium">Type</th>
+                  </tr>
+                </ng-template>
+    
+                <ng-template pTemplate="body">
+                  <tr>
+                    <td>
+                      <input
+                        pInputText
+                        [(ngModel)]="q.label"
+                        class="w-full" />
+                    </td>
+    
+                    <td>
+                      <p-select
+                        [options]="questionTypes"
+                        [(ngModel)]="q.type"
+                        class="w-full">
+                      </p-select>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+              <!-- Options Table -->
+               @if (isOptionsBased(q.type)) {
+              <div class="space-y-3">
+                  <div class="flex flex-row justify-between items-center">
+                    <p class="ps-4 font-bold text-xl">Options</p>
+                    <button
+                      pButton
+                      icon="pi pi-plus"
+                      label="Add Option"
+                      class="p-button-sm"
+                      (click)="addOption(q)">
+                    </button>
+                  </div>
+         
+                   <p-table [value]="q.options" [rowTrackBy]="trackByIndex">
+                     <ng-template pTemplate="header">
+                       <tr>
+                         <th>Value</th>
+                         <th style="width: 4rem"></th>
+                       </tr>
+                     </ng-template>
+         
+                     <ng-template pTemplate="body" let-option let-rowIndex="rowIndex">
+                       <tr>
+                         <td>
+                           <input
+                             pInputText
+                             [(ngModel)]="q.options[rowIndex]"
+                             class="w-full" />
+                         </td>
+                         <td>
+                           <button
+                             pButton
+                             icon="pi pi-trash"
+                             class="p-button-text p-button-danger"
+                             (click)="removeOption(q, rowIndex)">
+                           </button>
+                         </td>
+                       </tr>
+                     </ng-template>
+                   </p-table>
+              </div>
+            }
+              </p-accordion-content>
+    
+          </p-accordion-panel>          
+          
+        }
+      </p-accordion>
+    </section>
+  
+  </div>
+}

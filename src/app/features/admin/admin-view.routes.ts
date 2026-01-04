@@ -7,6 +7,8 @@ import { TeacherList } from './teacher/teacher-list/teacher-list';
 import { StudentListAdmin } from './student/student-list-admin/student-list-admin';
 import { SurveyListAdmin } from './survey/survey-list-admin/survey-list-admin';
 import { AnswersAdmin } from './survey/answers-admin/answers-admin';
+import { SurveyCreateAdmin } from './survey/survey-create-admin/survey-create-admin';
+import { ViewSurveyAdmin } from './survey/view-survey-admin/view-survey-admin';
 
 export const ADMIN_VIEW_ROUTES: Routes = [
   {
@@ -29,9 +31,17 @@ export const ADMIN_VIEW_ROUTES: Routes = [
         component: SurveyListAdmin
       },
       {
+        path: 'create',
+        component: SurveyCreateAdmin
+      },
+      {
         path: 'students-answers',
         component: AnswersAdmin
-      }
+      },
+      {
+        path: ':id',
+        component: ViewSurveyAdmin
+      },
     ]
   },
   {

@@ -83,7 +83,8 @@ export class AppMenu {
                 label: 'Surveys',
                 items: [
                     { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/app/admin/view/surveys'] },
-                    { label: 'Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/admin/view/surveys/students-answers'] }
+                    { label: 'Answers', icon: 'pi pi-fw pi-send', routerLink: ['/app/admin/view/surveys/students-answers'] },
+                    { label: 'Create', icon: 'pi pi-fw pi-plus', routerLink: ['/app/admin/view/surveys/create'] },
                 ]
             },
             {

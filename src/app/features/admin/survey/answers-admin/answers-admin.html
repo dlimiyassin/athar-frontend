@@ -1,1 +1,136 @@
-<p>answers-admin works!</p>
+<div class="space-y-10">
+
+  
+  <div class="space-y-4">
+    <!-- Header -->
+    <h1 class="text-gray-900">
+      Survey Responses
+    </h1>
+
+      @if (!loadingSurveys && surveys.length === 0) {
+    <div class="mt-10">
+      <p-card class="text-center">
+      
+        <p class="text-lg font-bold text-gray-600">
+          No active surveys available. Let's Create One.
+        </p>
+      
+      </p-card>
+    </div>
+  }
+
+    <!-- Surveys Pagination -->
+    @if (!loadingSurveys && surveys.length > pageSize) {
+      <p-paginator
+        [rows]="pageSize"
+        [totalRecords]="surveys.length"
+        (onPageChange)="onPageChange($event)">
+      </p-paginator>
+    }
+      <!-- Surveys Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+        @if (loadingSurveys) {
+          <p-skeleton height="7rem"></p-skeleton>
+          <p-skeleton height="7rem"></p-skeleton>
+          <p-skeleton height="7rem"></p-skeleton>
+        }
+    
+        @for (survey of pagedSurveys; track survey.id) {
+          <p-card
+            class="survey-card cursor-pointer"
+            (click)="selectSurvey(survey)"
+            [ngClass]="{ 'active': selectedSurvey?.id === survey.id }">
+    
+            <div class="space-y-2">
+              <h3 class="text-lg font-semibold text-gray-800">
+                {{ survey.title }}
+              </h3>
+    
+              <p class="text-sm text-gray-500 line-clamp-3">
+                {{ survey.description }}
+              </p>
+    
+              <div class="flex justify-between items-center pt-2">
+                <span class="text-xs text-gray-400">
+                  {{ formatDate(survey.createdAt) }}
+                </span>
+                <p-tag value="Survey"></p-tag>
+              </div>
+            </div>
+    
+          </p-card>
+        }
+      </div>
+    
+  </div>
+
+
+
+  <!-- Selected Survey -->
+  @if (selectedSurvey) {
+
+    <p-divider></p-divider>
+
+    <div class="space-y-1">
+      <h2 class="text-2xl font-semibold text-gray-800">
+        {{ selectedSurvey.title }}
+      </h2>
+      <p class="text-gray-500">
+        {{ responses.length }} responses collected
+      </p>
+    </div>
+
+    @if (loadingResponses) {
+      <p-skeleton height="5rem"></p-skeleton>
+    }
+
+    @if (!loadingResponses) {
+
+      <p-accordion>
+
+        @for (question of selectedSurvey.questions; track question.id) {
+
+          <p-accordion-panel value="{{ question.id }}">
+
+            <p-accordion-header>
+              <div class="flex justify-between items-center w-full">
+                <span class="font-medium text-gray-800">
+                  {{ question.label }}
+                </span>
+                <p-tag [value]="question.type"></p-tag>
+              </div>
+            </p-accordion-header>
+
+            <p-accordion-content>
+
+              <div class="space-y-3 py-3">
+
+                @if (aggregatedAnswers(question).length === 0) {
+                  <p class="text-gray-400 text-sm">
+                    No responses for this question.
+                  </p>
+                }
+
+                @for (item of aggregatedAnswers(question); track item.value) {
+                  <div class="answer-aggregate">
+                    <span>{{ item.value }}</span>
+                    <p-tag
+                      severity="info"
+                      [value]="item.count + ' students'">
+                    </p-tag>
+                  </div>
+                }
+
+              </div>
+
+            </p-accordion-content>
+
+          </p-accordion-panel>
+        }
+
+      </p-accordion>
+    }
+  }
+
+</div>
