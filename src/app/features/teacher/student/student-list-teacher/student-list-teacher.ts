@@ -8,6 +8,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 
 import { StudentService } from '../../../../core/services/student.service';
 import { StudentDto } from '../../../../core/models/student.dto';
@@ -25,7 +26,8 @@ import { LayoutService } from '../../../layout/service/layout.service';
     IconFieldModule,
     InputIconModule,
     InputTextModule,
-    SelectModule
+    SelectModule,
+    ButtonModule
   ],
   templateUrl: './student-list-teacher.html',
   styleUrl: './student-list-teacher.css'
@@ -35,21 +37,21 @@ export class StudentListTeacher implements OnInit {
   students: StudentDto[] = [];
   loading = true;
 
-  /** Used by p-columnFilter (status dropdown) */
   userStatuses = Object.values(UserStatus);
 
-  constructor(private studentService: StudentService, public layoutService: LayoutService,) {}
+  constructor(
+    private studentService: StudentService,
+    public layoutService: LayoutService
+  ) {}
 
   ngOnInit(): void {
     this.layoutService.onMenuToggle();
     this.studentService.findAll().subscribe({
-      next: (students) => {
+      next: students => {
         this.students = students;
         this.loading = false;
       },
-      error: () => {
-        this.loading = false;
-      }
+      error: () => (this.loading = false)
     });
   }
 
@@ -57,21 +59,24 @@ export class StudentListTeacher implements OnInit {
     table.clear();
   }
 
-  /**
-   * Maps UserStatus → PrimeNG Tag severity
-   */
- getUserStatusSeverity(status: string): 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' | null {
+  getInitial(student: StudentDto): string {
+    return student?.user?.lastName?.charAt(0)?.toUpperCase() || '?';
+  }
+
+  getUserStatusSeverity(
+    status: string
+  ): 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' | null {
     switch (status) {
-        case 'Active':
-            return 'success';
-        case 'Pending':
-            return 'info';
-        case 'Suspended':
-            return 'danger';
-        case 'Warning':
-            return 'warn';
-        default:
-            return null;
+      case 'Active':
+        return 'success';
+      case 'Pending':
+        return 'info';
+      case 'Suspended':
+        return 'danger';
+      case 'Warning':
+        return 'warn';
+      default:
+        return null;
     }
-}
+  }
 }

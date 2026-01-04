@@ -6,6 +6,7 @@
   "theme": {
     "colors": {
       "athar": "#10b981",
+      "athar-light": "#ECFDF5",
        "primary": "#1fb6ff",
        "purple": "#7e5bef"
     },
