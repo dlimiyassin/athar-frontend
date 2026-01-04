@@ -136,11 +136,13 @@
 
             <button (click)="toggleFieldTypeDropdown()" class="font-medium border rounded-2xl p-2">Type +</button>
             <!-- Field Type Dropdown Menu -->
-            <ul *ngIf="fieldTypeDropdownVisible" class="absolute left-4 mt-0 w-48 bg-white rounded-md shadow-lg py-2 z-50">
-            @for (fieldType of fieldTypes; track $index) {
-              <li class="cursor-pointer px-4 py-2 hover:text-white hover:bg-gray-600" (click)="setFieldType(fieldType)">{{ fieldType }}</li>
-            }
-            </ul>
+             @if (fieldTypeDropdownVisible) {
+               <ul class="absolute left-4 mt-0 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+               @for (fieldType of fieldTypes; track $index) {
+                 <li class="cursor-pointer px-4 py-2 hover:text-white hover:bg-gray-600" (click)="setFieldType(fieldType)">{{ fieldType }}</li>
+               }
+               </ul>
+             }
         </div>
       <p *ngIf="field.type"  class="p-2 bg-green-200 rounded-l-md">{{ field.type }}</p>
     </div>

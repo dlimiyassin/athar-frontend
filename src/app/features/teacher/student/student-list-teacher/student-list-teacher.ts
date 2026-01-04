@@ -12,6 +12,7 @@ import { SelectModule } from 'primeng/select';
 import { StudentService } from '../../../../core/services/student.service';
 import { StudentDto } from '../../../../core/models/student.dto';
 import { UserStatus } from '../../../../core/enums/UserStatus';
+import { LayoutService } from '../../../layout/service/layout.service';
 
 @Component({
   selector: 'app-student-list-teacher',
@@ -37,9 +38,10 @@ export class StudentListTeacher implements OnInit {
   /** Used by p-columnFilter (status dropdown) */
   userStatuses = Object.values(UserStatus);
 
-  constructor(private studentService: StudentService) {}
+  constructor(private studentService: StudentService, public layoutService: LayoutService,) {}
 
   ngOnInit(): void {
+    this.layoutService.onMenuToggle();
     this.studentService.findAll().subscribe({
       next: (students) => {
         this.students = students;
