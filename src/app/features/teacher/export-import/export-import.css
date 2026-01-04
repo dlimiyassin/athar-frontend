@@ -5,10 +5,10 @@
 }
 
 .label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.3rem;
-  color: #374151;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
 }
 
 .select {

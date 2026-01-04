@@ -1,3 +1,4 @@
+<p-toast />
 <div class="space-y-8">
 
   <!-- Header -->
@@ -13,12 +14,12 @@
 
   <!-- Sections -->
   <div
-    class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10"
+    class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-stretch"
   >
 
     <!-- EXPORT -->
     <div
-      class="card p-5 rounded-2xl border bg-white shadow-sm flex flex-col justify-between"
+      class="card p-5 rounded-2xl border bg-white shadow-sm flex flex-col justify-between h-full"
     >
       <div class="space-y-3">
         <h2 class="text-lg font-medium text-gray-800">
@@ -41,7 +42,7 @@
 
     <!-- IMPORT -->
     <div
-      class="card p-5 rounded-2xl border bg-white shadow-sm"
+      class="card p-5 rounded-2xl border bg-white shadow-sm flex flex-col justify-between h-full"
     >
       <h2 class="text-lg font-medium text-gray-800 mb-4">
         Import AI Predictions
@@ -63,16 +64,39 @@
       class="w-full mb-4" />
 
       <!-- File -->
-      <label class="label block text-sm text-gray-600 mb-1">
-        Prediction File (CSV)
-      </label>
+       <div>
+         <label class="label text-sm text-gray-600 mb-1 flex items-center gap-2">
+           Prediction File (CSV)
+
+           <i 
+             class="pi pi-info-circle text-gray-400 hover:text-gray-600 cursor-pointer"
+             pTooltip="
+                       ✔ Prediction column must be the LAST one
+                       
+                       ✔ Do NOT modify Student IDs"
+             tooltipPosition="top"
+           ></i>
+         </label>
+
+       </div>
+
 
       <input
+        #fileInput
         class="w-full mb-4 py-2 px-3 rounded-lg border border-gray-300 hover:cursor-pointer"
         type="file"
         accept=".csv"
         (change)="onFileSelected($event)"
       />
+
+      @if (selectedFile) {
+        <div class="flex items-center gap-2 mb-3 text-green-600">
+          <i class="pi pi-check-circle"></i>
+          <span class="text-sm">
+            {{ selectedFile.name }} uploaded
+          </span>
+        </div>
+      }
 
       <button
         class="primary-btn w-full py-2 rounded-lg border border-gray-600 hover:bg-[#10b981] hover:text-white hover:cursor-pointer transition"
@@ -82,9 +106,9 @@
         {{ importing ? 'Importing…' : 'Import Predictions' }}
       </button>
 
-      <p class="hint text-xs text-gray-400 mt-3">
+      <!-- <p class="hint text-xs text-gray-400 mt-3">
         The CSV must contain exactly one additional column for the selected prediction type.
-      </p>
+      </p> -->
     </div>
 
   </div>

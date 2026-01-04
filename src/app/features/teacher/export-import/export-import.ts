@@ -5,11 +5,15 @@ import { PredictionType } from '../../../core/import-export/models/prediction.ty
 import { Select } from "primeng/select";
 import { PredictionConfigService } from '../../../core/import-export/service/prediction.config.service';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { ElementRef, ViewChild } from '@angular/core';
+import { Toast } from "primeng/toast";
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-export-import',
   standalone: true,
-  imports: [Select, FormsModule],
+  imports: [Select, FormsModule, Toast, TooltipModule],
   templateUrl: './export-import.html',
   styleUrl: './export-import.css',
 })
@@ -18,14 +22,17 @@ export class ExportImport implements OnInit {
   exporting = false;
   importing = false;
 
-  selectedFile: File | null = null;
-
+  
   predictionTypes: PredictionType[] = [];
   selectedPredictionTypeId: string | null = null;
+  selectedFile: File | null = null;
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     private exportImportService: ExportImportService,
-    private predictionConfigService: PredictionConfigService
+    private predictionConfigService: PredictionConfigService,
+    private messageService: MessageService
   ) {}
 
   /* =========================
@@ -70,7 +77,7 @@ export class ExportImport implements OnInit {
           window.URL.revokeObjectURL(url);
         },
         error: () => {
-          alert('Failed to export surveys.');
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to export students surveys.'});
         }
       });
   }
@@ -102,13 +109,30 @@ export class ExportImport implements OnInit {
       .pipe(finalize(() => this.importing = false))
       .subscribe({
         next: () => {
-          alert('Predictions imported successfully.');
-          this.selectedFile = null;
-          this.selectedPredictionTypeId = null;
+          this.messageService.add({severity:'success', summary: 'Success', detail: 'Predictions imported successfully.'});
+          this.resetComponent();
         },
         error: () => {
-          alert('Failed to import predictions.');
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to import predictions.'});
+          this.resetComponent();
         }
       });
   }
+
+  resetComponent(): void {
+    this.selectedFile = null;
+    this.selectedPredictionTypeId = null;
+    this.importing = false;
+    this.exporting = false;
+    
+    this.resetFileInput();
+    this.loadPredictionTypes();
+  }
+
+  resetFileInput(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
 }
