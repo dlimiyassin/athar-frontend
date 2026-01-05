@@ -1,1 +1,103 @@
-<p>teacher-list works!</p>
+<p-toast />
+
+<!-- Header -->
+<div class="mb-1 flex items-center gap-3">
+  <h2 class="text-3xl font-bold">Teachers</h2>
+  <p-tag
+    class="bg-athar-light text-athar border-athar mb-2"
+    [value]="'Total of '+teachers.length">
+  </p-tag>
+
+</div>
+<div class="card space-y-4">
+  <!-- Header -->
+  <!-- <div class="flex items-center justify-between">
+    <div>
+      <h1 class="title">Teachers</h1>
+      <p class="subtitle">
+        Manage teachers who can create surveys and analyze results.
+      </p>
+    </div>
+
+    <button
+      class="primary-btn"
+      (click)="addNewRow()"
+      [disabled]="hasPendingNewRow()"
+    >
+      + Add
+    </button>
+  </div> -->
+
+  <p-table
+    [value]="teachers"
+    editMode="cell"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '70rem' }"
+  >
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th class="text-center">Enabled</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-teacher>
+      <tr>
+
+        <!-- First Name -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="teacher.firstName"
+            (blur)="onCellEditComplete(teacher)"
+            [ngClass]="{ 'invalid-cell': !teacher.firstName }"
+          />
+        </td>
+
+        <!-- Last Name -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="teacher.lastName"
+            (blur)="onCellEditComplete(teacher)"
+            [ngClass]="{ 'invalid-cell': !teacher.lastName }"
+          />
+        </td>
+
+        <!-- Email -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="teacher.email"
+            (blur)="onCellEditComplete(teacher)"
+            [ngClass]="{ 'invalid-cell': !teacher.email }"
+          />
+        </td>
+
+        <!-- Enabled -->
+        <td class="text-center">
+          <p-toggleswitch
+            [(ngModel)]="teacher.enabled"
+            (onChange)="onCellEditComplete(teacher)"
+          />
+        </td>
+
+        <!-- Actions -->
+        <td class="text-center">
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="deleteRow(teacher)"
+          ></button>
+        </td>
+
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>

@@ -1,51 +1,44 @@
-
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputTextModule } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ToastModule } from 'primeng/toast';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { FieldType } from '../../../../core/enums/field-type.enum';
+
 import { AcademicProfileFieldDto } from '../../../../core/models/academic-profile-field.dto';
 import { AcademicFieldsConfigService } from '../../../../core/services/academic-fields-config.service';
-
+import { FieldType } from '../../../../core/enums/field-type.enum';
 
 @Component({
   selector: 'app-academic-fields',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     TableModule,
-    ButtonModule,
-    DialogModule,
-    SplitButtonModule,
     InputTextModule,
-    CheckboxModule,
-    ToastModule,
+    ToggleSwitchModule,
+    ButtonModule,
+    SelectModule,
+    Toast
   ],
-  standalone: true,
   providers: [MessageService],
   templateUrl: './academic-fields.html',
-  styleUrl: './academic-fields.css',
+  styleUrl: './academic-fields.css'
 })
 export class AcademicFields implements OnInit {
 
   fields: AcademicProfileFieldDto[] = [];
-  selectedFields : AcademicProfileFieldDto[] = [];
 
-  field: AcademicProfileFieldDto = {} as AcademicProfileFieldDto;
-  fieldDialog = false;
-  submitted = false;
-  editMode = false;
-  fieldTypeDropdownVisible:boolean = false;
-  fieldTypes : FieldType[] = []
+  fieldTypes = Object.values(FieldType).map(type => ({
+    label: type,
+    value: type
+  }));
 
   constructor(
     private fieldService: AcademicFieldsConfigService,
@@ -54,98 +47,95 @@ export class AcademicFields implements OnInit {
 
   ngOnInit(): void {
     this.loadFields();
-    this.fieldTypes = Object.values(FieldType);
-  }
-
-    toggleFieldTypeDropdown(){
-    this.fieldTypeDropdownVisible = !this.fieldTypeDropdownVisible;
-  }
-
-  setFieldType(fieldType: FieldType){
-    this.field.type = fieldType;
-    this.fieldTypeDropdownVisible = false;
   }
 
   loadFields(): void {
-    this.fieldService.findAll().subscribe({
-      next: (data: AcademicProfileFieldDto[]) => (this.fields = data),
-    });
+    this.fieldService.findAll().subscribe(fields => this.fields = fields);
   }
 
-  openNew(): void {
-    this.field = {} as AcademicProfileFieldDto;
-    this.submitted = false;
-    this.editMode = false;
-    this.fieldDialog = true;
+  /* =========================
+     VALIDATION
+     ========================= */
+
+  isRowInvalid(field: AcademicProfileFieldDto): boolean {
+    return !field.name?.trim()
+        || !field.label?.trim()
+        || !field.type;
   }
 
-  editField(field: AcademicProfileFieldDto): void {
-    this.field = { ...field };
-    this.editMode = true;
-    this.fieldDialog = true;
+  hasPendingNewRow(): boolean {
+    return this.fields.some(
+      f => f.id == null && this.isRowInvalid(f)
+    );
   }
 
-  hideDialog(): void {
-    this.fieldDialog = false;
-    this.submitted = false;
-  }
+  /* =========================
+     CRUD
+     ========================= */
 
-  saveField(): void {
-    this.submitted = true;
-
-    if (!this.field.name || !this.field.label || !this.field.type) {
+  onCellEditComplete(field: AcademicProfileFieldDto): void {
+    if (this.isRowInvalid(field)) {
       return;
     }
 
-    this.fieldService.save(this.field).subscribe({
-      next: (saved: AcademicProfileFieldDto) => {
+    this.fieldService.save(field).subscribe({
+      next: () => {
         this.loadFields();
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Field saved successfully',
+          detail: 'Academic field saved successfully.'
         });
-        this.fieldDialog = false;
-        this.field = {} as AcademicProfileFieldDto;
-      },
-      error: (err) => {
-                this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save field',
-        });
-      }
-    });
-  }
-
-  deleteField(field: AcademicProfileFieldDto): void {
-    this.fieldService.delete(field).subscribe({
-      next : () => {
-        this.loadFields();
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Field could not be deleted',
+          detail: 'Could not save academic field.'
         });
       }
     });
-
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Deleted',
-      detail: 'Field deleted',
-    });
   }
 
-  deleteSelected(): void {
-    this.fields = this.fields.filter(f => !this.selectedFields.includes(f));
-    this.selectedFields = [];
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Deleted',
-      detail: 'Selected fields deleted',
+  addNewRow(): void {
+    if (this.hasPendingNewRow()) {
+      return;
+    }
+
+    this.fields = [
+      {
+        id: undefined as any,
+        name: '',
+        label: '',
+        type: undefined as any,
+        required: false
+      },
+      ...this.fields
+    ];
+  }
+
+  deleteRow(field: AcademicProfileFieldDto): void {
+    if (!field.id) {
+      this.fields = this.fields.filter(f => f !== field);
+      return;
+    }
+
+    this.fieldService.delete(field).subscribe({
+      next: () => {
+        this.loadFields();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: 'Academic field deleted.'
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not delete academic field.'
+        });
+      }
     });
   }
 }

@@ -1,0 +1,111 @@
+<p-fluid class="grid grid-cols-12 gap-6">
+
+  <!-- KPI CARDS -->
+  <div class="col-span-12 md:col-span-3" *ngFor="let kpi of kpis">
+    <div class="flex items-center gap-4 card">
+      <div class="p-3 rounded-xl bg-primary-100 text-primary">
+        <i [ngClass]="[kpi.icon, 'text-2xl']"></i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">{{ kpi.label }}</div>
+        <div class="text-2xl font-semibold">{{ kpi.value }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT IMPORTS -->
+  <div class="col-span-12 xl:col-span-6">
+    <div class="card">
+      <div class="flex justify-between mb-3">
+        <h3 class="font-semibold">Recent AI Imports</h3>
+        <span class="text-sm text-primary cursor-pointer">View logs</span>
+      </div>
+
+      <p-table [value]="recentImports" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>File</th>
+            <th>Prediction Type</th>
+            <th>Status</th>
+            <th class="text-center">Rows</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-i>
+          <tr>
+            <td>{{ i.file }}</td>
+            <td class="text-sm text-gray-500">{{ i.type }}</td>
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-success': i.status === 'SUCCESS',
+                  'badge-error': i.status === 'FAILED'
+                }">
+                {{ i.status }}
+              </span>
+            </td>
+            <td class="text-center">{{ i.rows }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- ACTIVE TEACHERS -->
+  <div class="col-span-12 xl:col-span-6">
+    <div class="card">
+      <div class="flex justify-between mb-3">
+        <h3 class="font-semibold">Active Teachers</h3>
+        <span class="text-sm text-primary cursor-pointer">Manage</span>
+      </div>
+
+      <p-table [value]="recentTeachers" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th class="text-center">Surveys</th>
+            <th class="text-center">Last Active</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-t>
+          <tr>
+            <td>{{ t.name }}</td>
+            <td class="text-center">
+              <span class="badge">{{ t.surveys }}</span>
+            </td>
+            <td class="text-center text-sm text-gray-500">
+              {{ t.lastActive }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- PREDICTION TYPES PIE -->
+  <div class="col-span-12 xl:col-span-5">
+    <div class="card">
+      <h3 class="mb-4 font-semibold">Prediction Types Distribution</h3>
+      <p-chart
+        type="pie"
+        [data]="predictionTypeData"
+        [options]="predictionTypeOptions">
+      </p-chart>
+    </div>
+  </div>
+
+  <!-- FIELD TRENDS -->
+  <div class="col-span-12 xl:col-span-7">
+    <div class="card">
+      <h3 class="mb-4 font-semibold">Future Fields of Study Trends</h3>
+      <p-chart
+        type="bar"
+        [data]="fieldTrendData"
+        [options]="fieldTrendOptions">
+      </p-chart>
+    </div>
+  </div>
+
+</p-fluid>

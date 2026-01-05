@@ -1,1 +1,85 @@
-<p>future-fields works!</p>
+<p-toast />
+
+<div class="card space-y-4">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="title">Future Fields of Study</h1>
+      <p class="subtitle">
+        Manage academic paths used by prediction interpretation.
+      </p>
+    </div>
+
+    <button
+      class="primary-btn"
+      (click)="addNewRow()"
+      [disabled]="hasPendingNewRow()"
+    >
+      + Add
+    </button>
+  </div>
+
+  <p-table
+    [value]="fields"
+    editMode="cell"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '55rem' }"
+  >
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 15%">Code</th>
+        <th>Label</th>
+        <th class="text-center" style="width: 15%">Active</th>
+        <th class="text-center" style="width: 10%">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-field>
+      <tr>
+
+        <!-- Code -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            type="number"
+            [(ngModel)]="field.code"
+            (blur)="onCellEditComplete(field)"
+            [ngClass]="{ 'invalid-cell': field.code == null }"
+          />
+        </td>
+
+        <!-- Label -->
+        <td pEditableColumn>
+          <input
+            pInputText
+            [(ngModel)]="field.label"
+            (blur)="onCellEditComplete(field)"
+            [ngClass]="{ 'invalid-cell': !field.label }"
+          />
+        </td>
+
+        <!-- Active -->
+        <td class="text-center">
+          <p-toggleswitch
+            [(ngModel)]="field.active"
+            (onChange)="onCellEditComplete(field)"
+          />
+        </td>
+
+        <!-- Actions -->
+        <td class="text-center">
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="deleteRow(field)"
+          ></button>
+        </td>
+
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
