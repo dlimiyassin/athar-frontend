@@ -1,0 +1,71 @@
+<div class="space-y-6">
+
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-800">
+      My Predictions
+    </h1>
+    <p class="text-sm text-gray-500">
+      AI-based insights generated from your academic data
+    </p>
+  </div>
+
+  @for (p of predictions; track $index) {
+    <p-card class="prediction-card">
+
+      <div class="flex justify-between items-start">
+        <div>
+
+          <!-- Prediction type -->
+          <div class="text-sm text-gray-500">
+            {{ p.predictionTypeDto.label }}
+          </div>
+
+          <!-- Interpreted value -->
+          <div class="text-lg font-semibold">
+            {{ p.interpretedValue }}
+          </div>
+
+          <!-- Optional extra info -->
+          <div class="text-xs text-gray-400 mt-1">
+            {{ p.predictionTypeDto.description }}
+          </div>
+        </div>
+
+        <p-tag
+          *ngIf="isNew(p)"
+          value="NEW"
+          severity="success">
+        </p-tag>
+      </div>
+
+      <div class="mt-3 text-sm text-gray-500">
+        Generated {{ p.generatedAt | date:'medium' }}
+      </div>
+
+      <button
+        pButton
+        label="View details"
+        class="p-button-text mt-2"
+        (click)="toggle(p.id)">
+      </button>
+
+      <div *ngIf="expandedId === p.id" class="mt-4 border-t pt-3 text-sm">
+        <div>
+          <span class="font-medium">Raw value:</span> {{ p.rawValue }}
+        </div>
+
+        <div>
+          <span class="font-medium">Value type:</span>
+          {{ p.predictionTypeDto.valueType }}
+        </div>
+
+        <div>
+          <span class="font-medium">Model:</span>
+          {{ p.modelVersion || 'N/A' }}
+        </div>
+      </div>
+
+    </p-card>
+  }
+
+</div>

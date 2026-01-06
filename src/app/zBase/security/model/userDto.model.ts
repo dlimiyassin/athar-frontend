@@ -11,6 +11,7 @@ export class UserDto extends BaseDto {
     public enabled!: boolean;
     public roleDtos: Array<RoleDto>;
     public status! : UserStatus;
+    public lastLogin!: string;
 
     constructor() {
         super();

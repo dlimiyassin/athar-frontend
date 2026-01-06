@@ -107,7 +107,7 @@ export class PredictionTypes implements OnInit {
 
     this.predictionTypes = [
       {
-        id: undefined,
+        id: null,
         code: '',
         label: '',
         description: '',

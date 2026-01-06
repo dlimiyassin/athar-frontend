@@ -7,6 +7,7 @@ import { LayoutService } from '../service/layout.service';
 import { AuthService } from '../../../zBase/security/service/auth.service';
 import { UserDto } from '../../../zBase/security/model/userDto.model';
 import { UserService } from '../../../zBase/security/service/user.service';
+import { PredictionResultService } from '../../../core/import-export/service/prediction.service';
 
 @Component({
     selector: 'app-topbar',
@@ -63,6 +64,20 @@ import { UserService } from '../../../zBase/security/service/user.service';
     
                 <!-- Desktop -->
                 <div class="hidden lg:flex items-center gap-4">
+
+                @if(this.authService.isStudent){
+                    <button
+                      class="layout-topbar-action relative"
+                      routerLink="/app/student/view/predictions">
+                      <i class="pi pi-bell"></i>
+
+                      <span
+                        *ngIf="unseenPredictions > 0"
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                        {{ unseenPredictions }}
+                      </span>
+                    </button>
+                }
 
                     <!-- User Identity -->
                     <div
@@ -171,13 +186,31 @@ export class AppTopbar implements OnInit {
 
     constructor(
         public layoutService: LayoutService,
-        private authService: AuthService,
-        private userService: UserService
+        public authService: AuthService,
+        private userService: UserService,
+        private predictionResultService: PredictionResultService
     ) {}
 
+    unseenPredictions = 0;
+
     ngOnInit(): void {
-        this.loadUserInfo();
+      this.loadUserInfo();
+      this.loadPredictionNotifications();
     }
+
+    loadPredictionNotifications(): void {
+      if (!this.authService.isStudent) return;
+
+      this.predictionResultService
+        .getByAuthenticatedStudent()
+        .subscribe(results => {
+          const lastLogin = this.authService.authenticatedUser?.lastLogin;
+          this.unseenPredictions = lastLogin
+            ? results.filter(r => new Date(r.generatedAt) > new Date(lastLogin)).length
+            : results.length;
+        });
+    }
+
     
     loadUserInfo(): void {
         this.userService.loadAuthenticatedUser().subscribe({
