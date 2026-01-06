@@ -20,6 +20,7 @@ export class AuthService {
     // readonly API = 'https://uir-shop.vercel.app/api/v1/';
 
     readonly API = environment.apiUrlService + 'auth/';
+
     public _user = new UserDto();
     private _authenticatedUser = new UserDto();
     private _authenticated = <boolean>JSON.parse(<string>localStorage.getItem('autenticated')) || false;
@@ -102,7 +103,7 @@ export class AuthService {
       );
     }
 
-    public loadInfos() {
+        public loadInfos() {
         const tokenDecoded = this.tokenService.decode();
         console.log(tokenDecoded)
         const firstName = tokenDecoded.firstName;
@@ -124,9 +125,8 @@ export class AuthService {
 
     }
 
-
-    // public hasRole(role: Role): boolean {
-    //     const index = this._authenticatedUser.roles.findIndex(r => r.authority === role.authority);
+    // public hasRole(role: RoleDto): boolean {
+    //     const index = this._authenticatedUser.roleDtos.findIndex(r => r.authority === role.authority);
     //     return index > -1 ? true : false;
     // }
 
@@ -172,50 +172,23 @@ export class AuthService {
     }
 
 
-    get isAdmin(): boolean {
-        const tokenDecoded = this.tokenService.decode();
-        if (tokenDecoded != null) {
-            const roles = tokenDecoded.roles;
-            roles.forEach((role: string) => {
-                if (role === 'ROLE_SUPER_ADMIN' || role === 'ROLE_ADMIN') {
-                    this._isAdmin = true;
-                    this._isStudent = false;
-                    this._isTeacher = false;
-                }
-            });
-        }
-        return this._isAdmin;
-    }
-
     get isStudent(): boolean {
-        const tokenDecoded = this.tokenService.decode();
-        if (tokenDecoded != null) {
-            const roles = tokenDecoded.roles;
-            roles.forEach((role: string) => {
-                if (role === 'ROLE_STUDENT') {
-                    this._isStudent = true;
-                    this._isAdmin = false;
-                    this._isTeacher = false;
-                }
-            });
-        }
-        return this._isStudent;
+        const decoded = this.tokenService.decode();
+        return decoded?.roles?.includes('ROLE_STUDENT') ?? false;
     }
 
     get isTeacher(): boolean {
-        const tokenDecoded = this.tokenService.decode();
-        if (tokenDecoded != null) {
-            const roles = tokenDecoded.roles;
-            roles.forEach((role: string) => {
-                if (role === 'ROLE_TEACHER') {
-                    this._isTeacher = true;
-                    this._isAdmin = false;
-                    this._isStudent = false;
-                }
-            });
-        }
-        return this._isTeacher;
+        const decoded = this.tokenService.decode();
+        return decoded?.roles?.includes('ROLE_TEACHER') ?? false;
     }
+
+    get isAdmin(): boolean {
+        const decoded = this.tokenService.decode();
+        return decoded?.roles?.some((r: string) =>
+            r === 'ROLE_ADMIN' || r === 'ROLE_SUPER_ADMIN'
+        ) ?? false;
+    }
+
 
     getRoleName(roleDtos: Array<RoleDto> | undefined) {
         if (!roleDtos || roleDtos.length === 0) {

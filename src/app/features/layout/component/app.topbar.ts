@@ -195,8 +195,8 @@ export class AppTopbar implements OnInit {
 
     ngOnInit(): void {
       this.loadUserInfo();
-      this.loadPredictionNotifications();
     }
+
 
     loadPredictionNotifications(): void {
       if (!this.authService.isStudent) return;
@@ -204,10 +204,14 @@ export class AppTopbar implements OnInit {
       this.predictionResultService
         .getByAuthenticatedStudent()
         .subscribe(results => {
-          const lastLogin = this.authService.authenticatedUser?.lastLogin;
+          const lastLogin = this.user?.lastLogin;
+          console.log('lastLogin', lastLogin);
+          
           this.unseenPredictions = lastLogin
             ? results.filter(r => new Date(r.generatedAt) > new Date(lastLogin)).length
             : results.length;
+            console.log('unseenPredictions', this.unseenPredictions);
+
         });
     }
 
@@ -216,6 +220,7 @@ export class AppTopbar implements OnInit {
         this.userService.loadAuthenticatedUser().subscribe({
             next: user => {
                 this.user = user;
+                this.loadPredictionNotifications();
                 this.updateUserDetails();
             },
             error: () => {
