@@ -18,7 +18,7 @@ export class DashboardTeacher implements OnInit, OnDestroy {
   // KPI values (mocked – later from API)
   totalSurveys = 12;
   activeSurveys = 5;
-  totalResponses = 342;
+  totalResponses = 24;
   avgCompletionRate = 78;
 
   responsesLineData: any;
@@ -33,23 +33,23 @@ export class DashboardTeacher implements OnInit, OnDestroy {
 
 kpis = [
   { label: 'My Surveys', value: 8, icon: 'pi pi-file' },
-  { label: 'Total Responses', value: 463, icon: 'pi pi-chart-bar' },
+  { label: 'Total Responses', value: 46, icon: 'pi pi-chart-bar' },
   { label: 'Active Surveys', value: 3, icon: 'pi pi-bolt' },
   { label: 'Avg Satisfaction', value: '78%', icon: 'pi pi-star' }
 ];
 
 
 mySurveys = [
-  { title: 'Student Engagement', target: 'Students', responses: 76 },
-  { title: 'Course Feedback', target: 'Students', responses: 42 },
+  { title: 'Student Engagement', target: 'Students', responses: 26 },
+  { title: 'Course Feedback', target: 'Students', responses: 12 },
   { title: 'Teaching Methods', target: 'Students', responses: 18 }
 ];
 
 
 recentStudents = [
-  { name: 'Yassine El Amrani', email: 'y.elamrani@...', answers: 27 },
-  { name: 'Sofia Boukhari', email: 's.boukhari@...', answers: 24 },
-  { name: 'Abdelhak Khaini', email: 'a.khaini@...', answers: 38 }
+  { name: 'Yassine El Amrani', email: 'y.elamrani@...', answers: 17 },
+  { name: 'Sofia Boukhari', email: 's.boukhari@...', answers: 4 },
+  { name: 'Abdelhak Khaini', email: 'a.khaini@...', answers: 8 }
 ];
 
 engagementData = {

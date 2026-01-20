@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
@@ -15,9 +14,10 @@ import { AuthService } from '../../../zBase/security/service/auth.service';
 import { StringUtil } from '../../../zBase/utils/StringUtil';
 
 @Component({
-    selector: 'app-register-page',
-    standalone: true,
-    imports: [CommonModule,
+  selector: 'app-register-page',
+  standalone: true,
+  imports: [
+    CommonModule,
     FormsModule,
     RouterModule,
     RouterLink,
@@ -26,126 +26,140 @@ import { StringUtil } from '../../../zBase/utils/StringUtil';
     PasswordModule,
     ToastModule,
     RippleModule,
-    NgClass],
-    template: `
+    NgClass
+  ],
+  template: `
+    <p-toast />
 
-        <p-toast/>
+    <div class="py-10 flex bg-surface-50 dark:bg-surface-950">
 
-        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center pt-8 max-h-screen px-4">
-          <div class="w-full max-w-lg">
+      <!-- Left image section -->
+      <div class="hidden lg:flex w-1/2 items-center justify-center">
+        <img
+          src="/assets/landing/signup.png"
+          alt="Sign up illustration"
+          class="max-w-md w-full object-contain"
+        />
+      </div>
 
-            <div
-              class="bg-white dark:bg-surface-900 rounded-3xl shadow-xl px-8 py-6">
+      <!-- Right form section -->
+      <div class="flex w-full lg:w-1/2 items-center justify-center px-4">
+        <div class="w-full max-w-lg">
 
-              <!-- Header -->
-              <div class="text-center mb-6">
-                <h1 class="text-2xl font-semibold text-surface-900 dark:text-surface-0">
-                  Create your account
-                </h1>
-                <p class="text-sm text-muted-color mt-1">
-                  Join the platform in a few seconds
-                </p>
+          <div class="bg-white dark:bg-surface-900 rounded-3xl shadow-xl px-8 py-6">
+
+            <!-- Header -->
+            <div class="text-center mb-6">
+              <h1 class="text-2xl font-semibold text-surface-900 dark:text-surface-0">
+                Create your account
+              </h1>
+              <p class="text-sm text-muted-color mt-1">
+                Join the platform in a few seconds
+              </p>
+            </div>
+
+            <!-- Form -->
+            <div class="space-y-4">
+
+              <!-- First Name -->
+              <div>
+                <label class="block text-sm font-medium mb-1">First Name</label>
+                <input
+                  pInputText
+                  type="text"
+                  class="w-full"
+                  placeholder="First name"
+                  [(ngModel)]="registerDto.firstName"
+                />
               </div>
 
-              <!-- Form -->
-              <div class="space-y-4">
-
-                <!-- First Name -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">First Name</label>
-                  <input
-                    pInputText
-                    type="text"
-                    class="w-full"
-                    placeholder="First name"
-                    [(ngModel)]="registerDto.firstName"
-                  />
-                </div>
-
-                <!-- Last Name -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Last Name</label>
-                  <input
-                    pInputText
-                    type="text"
-                    class="w-full"
-                    placeholder="Last name"
-                    [(ngModel)]="registerDto.lastName"
-                  />
-                </div>
-
-                <!-- Email -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Email</label>
-                  <input
-                    pInputText
-                    type="email"
-                    class="w-full"
-                    placeholder="Email address"
-                    [(ngModel)]="registerDto.email"
-                  />
-                </div>
-
-                <!-- Phone -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Phone Number</label>
-                  <input
-                    pInputText
-                    type="tel"
-                    class="w-full"
-                    placeholder="+212..."
-                    [(ngModel)]="registerDto.phoneNumber"
-                  />
-                </div>
-
-                <!-- Password -->
-                <div>
-                  <label class="block text-sm font-medium mb-1">Password</label>
-                  <div class="relative">
-                    <input
-                      pInputText
-                      class="w-full pr-10"
-                      [type]="showPassword ? 'text' : 'password'"
-                      placeholder="Password"
-                      [(ngModel)]="registerDto.password"
-                    />
-                    <button
-                      type="button"
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                      (click)="togglePasswordVisibility()">
-                      <i
-                        class="pi"
-                        [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'">
-                      </i>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Submit -->
-                <p-button
-                  styleClass="w-full mt-4"
-                  [loading]="this.authService.isLoading"
-                  (onClick)="register()"
-                  label="Create Account">
-                </p-button>
-
-                <!-- Footer -->
-                <p class="text-center text-sm text-gray-500 pt-8">
-                  Already have an account?
-                  <a
-                    routerLink="/auth/login"
-                    class="font-semibold p-2 rounded-md bg-[#10b981] text-white ml-1">
-                    Sign in
-                  </a>
-                </p>
-
+              <!-- Last Name -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Last Name</label>
+                <input
+                  pInputText
+                  type="text"
+                  class="w-full"
+                  placeholder="Last name"
+                  [(ngModel)]="registerDto.lastName"
+                />
               </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input
+                  pInputText
+                  type="email"
+                  class="w-full"
+                  placeholder="Email address"
+                  [(ngModel)]="registerDto.email"
+                />
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Phone Number</label>
+                <input
+                  pInputText
+                  type="tel"
+                  class="w-full"
+                  placeholder="+212..."
+                  [(ngModel)]="registerDto.phoneNumber"
+                />
+              </div>
+
+              <!-- Password -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Password</label>
+                <div class="relative">
+                  <input
+                    pInputText
+                    class="w-full pr-10"
+                    [type]="showPassword ? 'text' : 'password'"
+                    placeholder="Password"
+                    [(ngModel)]="registerDto.password"
+                  />
+                  <button
+                    type="button"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    (click)="togglePasswordVisibility()"
+                  >
+                    <i
+                      class="pi"
+                      [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'"
+                    ></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <p-button
+                styleClass="w-full mt-4"
+                [loading]="authService.isLoading"
+                (onClick)="register()"
+                label="Create Account"
+              ></p-button>
+
+              <!-- Footer -->
+              <p class="text-center text-sm text-gray-500 pt-6">
+                Already have an account?
+                <a
+                  routerLink="/auth/login"
+                  class="font-semibold text-emerald-600 hover:underline ml-1"
+                >
+                  Sign in
+                </a>
+              </p>
+
             </div>
           </div>
         </div>
-
-    `
+      </div>
+    </div>
+  `
 })
+
 export class RegisterPage {
 
 

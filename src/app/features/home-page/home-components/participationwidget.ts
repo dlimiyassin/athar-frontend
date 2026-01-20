@@ -11,7 +11,7 @@ import { RippleModule } from 'primeng/ripple';
         <div id="participation" class="py-6 px-6 lg:px-20 mt-8 mx-0 lg:mx-20">
             <!-- Section Header -->
             <div class="col-span-12 text-center mt-20 mb-6">
-                <div class="text-surface-900 dark:text-surface-0 font-normal mb-2 text-4xl">
+                <div class="text-surface-900 dark:text-surface-0 font-extrabold mb-2 text-4xl">
                     Engage Every Academic Role
                 </div>
                 <span class="text-muted-color text-2xl">
@@ -25,7 +25,7 @@ import { RippleModule } from 'primeng/ripple';
                 <!-- STUDENTS -->
                 <div class="col-span-12 lg:col-span-4 p-0 md:p-4">
                     <div
-                        class="p-4 flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
+                        class="p-4 bg-white flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
                                border-2 hover:border-primary duration-300 transition-all"
                         style="border-radius: 10px"
                     >
@@ -70,7 +70,7 @@ import { RippleModule } from 'primeng/ripple';
                 <!-- TEACHERS -->
                 <div class="col-span-12 lg:col-span-4 p-0 md:p-4 mt-6 md:mt-0">
                     <div
-                        class="p-4 flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
+                        class="p-4 bg-white flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
                                border-2 hover:border-primary duration-300 transition-all"
                         style="border-radius: 10px"
                     >
@@ -115,7 +115,7 @@ import { RippleModule } from 'primeng/ripple';
                 <!-- INSTITUTIONS -->
                 <div class="col-span-12 lg:col-span-4 p-0 md:p-4 mt-6 md:mt-0">
                     <div
-                        class="p-4 flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
+                        class="p-4 bg-white flex flex-col border-surface-200 dark:border-surface-600 participation-card cursor-pointer
                                border-2 hover:border-primary duration-300 transition-all"
                         style="border-radius: 10px"
                     >

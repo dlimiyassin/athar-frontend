@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
     template: `
         <div id="highlights" class="py-6 px-6 lg:px-20 mx-0 my-12 lg:mx-20">
             <div class="col-span-12 text-center mt-20 mb-6">
-                <div class="text-surface-900 font-normal mb-2 text-4xl">
+                <div class="text-surface-900 font-extrabold mb-2 text-4xl">
                     Designed for Education
                 </div>
                 <span class="text-muted-color text-2xl">

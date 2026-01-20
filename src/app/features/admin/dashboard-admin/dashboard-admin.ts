@@ -26,25 +26,25 @@ export class DashboardAdmin implements OnInit, OnDestroy {
      KPI CARDS
      ========================= */
   kpis = [
-    { label: 'Total Students', value: 1246, icon: 'pi pi-users' },
-    { label: 'Teachers', value: 38, icon: 'pi pi-briefcase' },
-    { label: 'Surveys', value: 64, icon: 'pi pi-file' },
-    { label: 'AI Predictions', value: 3120, icon: 'pi pi-bolt' }
+    { label: 'Total Students', value: 24, icon: 'pi pi-users' },
+    { label: 'Teachers', value: 5, icon: 'pi pi-briefcase' },
+    { label: 'Surveys', value: 13, icon: 'pi pi-file' },
+    { label: 'AI Predictions', value: 72, icon: 'pi pi-bolt' }
   ];
 
   /* =========================
      TABLES
      ========================= */
   recentImports = [
-    { file: 'survey_export_01.csv', type: 'Grade Prediction', status: 'SUCCESS', rows: 420 },
-    { file: 'survey_export_02.csv', type: 'Job Potential', status: 'SUCCESS', rows: 310 },
-    { file: 'survey_export_03.csv', type: 'Field of Study', status: 'FAILED', rows: 0 }
+    { file: 'survey_export_01.csv', type: 'Grade Prediction', status: 'SUCCESS', rows: 24 },
+    { file: 'survey_export_02.csv', type: 'Job Potential', status: 'SUCCESS', rows: 24 },
+    { file: 'survey_export_03.csv', type: 'Field of Study', status: 'FAILED', rows: 24 }
   ];
 
   recentTeachers = [
     { name: 'Ahmed Hachimi', surveys: 12, lastActive: '2h ago' },
-    { name: 'Sara El Fassi', surveys: 8, lastActive: '1d ago' },
-    { name: 'Mohamed Benali', surveys: 5, lastActive: '3d ago' }
+    { name: 'Sara El Fassi', surveys: 1, lastActive: '1d ago' },
+    { name: 'Mohamed Benali', surveys: 0, lastActive: '3d ago' }
   ];
 
   /* =========================
@@ -107,7 +107,7 @@ export class DashboardAdmin implements OnInit, OnDestroy {
       datasets: [
         {
           label: 'Predicted Students',
-          data: [420, 310, 260, 190, 140],
+          data: [42, 31, 26, 19, 14],
           backgroundColor: style.getPropertyValue('--p-primary-500')
         }
       ]
