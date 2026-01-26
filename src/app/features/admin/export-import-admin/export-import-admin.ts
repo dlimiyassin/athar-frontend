@@ -9,15 +9,14 @@ import { MessageService } from 'primeng/api';
 import { ElementRef, ViewChild } from '@angular/core';
 import { Toast } from "primeng/toast";
 import { TooltipModule } from 'primeng/tooltip';
-
 @Component({
-  selector: 'app-export-import',
+  selector: 'app-export-import-admin',
   standalone: true,
   imports: [Select, FormsModule, TooltipModule, Toast],
-  templateUrl: './export-import.html',
-  styleUrl: './export-import.css',
+  templateUrl: './export-import-admin.html',
+  styleUrl: './export-import-admin.css',
 })
-export class ExportImport implements OnInit {
+export class ExportImportAdmin implements OnInit {
 
   exporting = false;
   importing = false;

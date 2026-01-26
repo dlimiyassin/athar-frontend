@@ -9,6 +9,7 @@ import { AnswersAdmin } from './survey/answers-admin/answers-admin';
 import { SurveyCreateAdmin } from './survey/survey-create-admin/survey-create-admin';
 import { ViewSurveyAdmin } from './survey/view-survey-admin/view-survey-admin';
 import { DashboardAdmin } from './dashboard-admin/dashboard-admin';
+import { ExportImportAdmin } from './export-import-admin/export-import-admin';
 
 export const ADMIN_VIEW_ROUTES: Routes = [
   {
@@ -43,6 +44,10 @@ export const ADMIN_VIEW_ROUTES: Routes = [
         component: ViewSurveyAdmin
       },
     ]
+  },
+    {
+    path: 'export-import',
+    component: ExportImportAdmin
   },
   {
     path: 'config',

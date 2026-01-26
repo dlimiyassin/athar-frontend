@@ -87,6 +87,10 @@ export class AppMenu {
                     { label: 'Create', icon: 'pi pi-fw pi-plus', routerLink: ['/app/admin/view/surveys/create'] },
                 ]
             },
+                        {
+                label: 'Export / Import',
+                items: [{ label: 'Export / Import', icon: 'pi pi-fw pi-download', routerLink: ['/app/admin/view/export-import'] }]
+            },
             {
                 label: 'Configuration',
                 items: [
