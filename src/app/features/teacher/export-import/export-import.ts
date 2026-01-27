@@ -112,8 +112,8 @@ export class ExportImport implements OnInit {
           this.messageService.add({severity:'success', summary: 'Success', detail: 'Predictions imported successfully.'});
           this.resetComponent();
         },
-        error: () => {
-          this.messageService.add({severity:'error', summary: 'Error', detail: 'Failed to import predictions.'});
+        error: (err) => {
+          this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
           this.resetComponent();
         }
       });
