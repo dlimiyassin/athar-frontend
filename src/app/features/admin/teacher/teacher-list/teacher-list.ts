@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api';
 import { TeacherService } from '../../../../core/services/teacher.service';
 import { UserDto } from '../../../../zBase/security/model/userDto.model';
 import { Tag } from "primeng/tag";
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -31,13 +32,13 @@ import { Tag } from "primeng/tag";
   styleUrl: './teacher-list.css'
 })
 export class TeacherList implements OnInit {
-
-  teachers: UserDto[] = [];
-
   constructor(
     private teacherService: TeacherService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {}
+
+  teachers: UserDto[] = [];
 
   ngOnInit(): void {
     this.loadTeachers();
@@ -133,5 +134,10 @@ export class TeacherList implements OnInit {
         });
       }
     });
+  }
+
+
+  viewRow(teacher: UserDto) {
+    this.router.navigate(['app/admin/view/teacher-view/', teacher.id]);
   }
 }

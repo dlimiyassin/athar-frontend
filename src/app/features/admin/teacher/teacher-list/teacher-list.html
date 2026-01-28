@@ -87,12 +87,18 @@
         </td>
 
         <!-- Actions -->
-        <td class="text-center">
+        <td class="flex flex-row justify-start items-start">
           <button
             pButton
             icon="pi pi-trash"
             class="p-button-text p-button-danger"
             (click)="deleteRow(teacher)"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-eye"
+            class="p-button-text p-button-secondary"
+            (click)="viewRow(teacher)"
           ></button>
         </td>
 

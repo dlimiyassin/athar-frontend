@@ -10,6 +10,8 @@ import { SurveyCreateAdmin } from './survey/survey-create-admin/survey-create-ad
 import { ViewSurveyAdmin } from './survey/view-survey-admin/view-survey-admin';
 import { DashboardAdmin } from './dashboard-admin/dashboard-admin';
 import { ExportImportAdmin } from './export-import-admin/export-import-admin';
+import { ViewTeacher } from './teacher/view-teacher/view-teacher';
+import { ViewStudentAdmin } from './student/view-student-admin/view-student-admin';
 
 export const ADMIN_VIEW_ROUTES: Routes = [
   {
@@ -21,8 +23,16 @@ export const ADMIN_VIEW_ROUTES: Routes = [
     component: TeacherList
   },
   {
+    path: 'teacher-view/:id',
+    component: ViewTeacher
+  },
+  {
     path: 'students-list',
     component: StudentListAdmin
+  },
+  {
+    path: 'student-view/:id',
+    component: ViewStudentAdmin
   },
   {
     path: 'surveys',
