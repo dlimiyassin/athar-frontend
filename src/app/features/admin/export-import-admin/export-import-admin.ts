@@ -20,6 +20,7 @@ export class ExportImportAdmin implements OnInit {
 
   exporting = false;
   importing = false;
+ importErrorMessage: string | undefined= undefined;
 
   
   predictionTypes: PredictionType[] = [];
@@ -112,9 +113,16 @@ export class ExportImportAdmin implements OnInit {
           this.resetComponent();
         },
         error: (err) => {
-          this.messageService.add({severity:'error', summary: 'Error', detail: err.error.message});
-          this.resetComponent();
-        }
+        this.importErrorMessage =
+          err?.error?.message ?? 'An unexpected error occurred during import.';
+
+        // Optional toast (can keep or remove)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.importErrorMessage
+        });
+      }
       });
   }
 

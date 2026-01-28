@@ -121,8 +121,17 @@
         <!-- Actions -->
         <td class="text-center">
           <div class="flex justify-center gap-2">
-            <button pButton icon="pi pi-eye" class="p-button-text p-button-sm"></button>
-            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
+            <button 
+            pButton 
+            icon="pi pi-eye" 
+            class="p-button-text p-button-sm"
+            (click)="viewStudent(student)"
+            ></button>
+            <button 
+            pButton icon="pi pi-pencil" 
+            class="p-button-text p-button-sm"
+            (click)="confirmDelete(student)"
+            ></button>
             <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></button>
           </div>
         </td>

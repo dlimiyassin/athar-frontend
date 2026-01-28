@@ -84,6 +84,7 @@
     [checkmark]="true" 
     optionLabel="label" 
     optionValue="id"
+    (onClick)="this.resetFileInput(); this.selectedFile = null; importErrorMessage = undefined;"
     [showClear]="true" 
     placeholder="Select a Prediction Type" 
     class="w-full mb-4"
@@ -125,6 +126,15 @@
   >
     {{ importing ? 'Importing…' : 'Import Predictions' }}
   </button>
+
+  @if (importErrorMessage) {
+    <div class="mt-4 text-red-600 flex items-center gap-2">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span class="text-sm whitespace-pre-line">
+        {{ importErrorMessage }}
+      </span>
+    </div>
+  }
 </div>
 
 

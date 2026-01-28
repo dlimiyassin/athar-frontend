@@ -1,3 +1,5 @@
+import { StudentViewTeacher } from './student/student-view-teacher/student-view-teacher';
+
 import { Routes } from "@angular/router";
 import { DashboardTeacher } from "./dashboard-teacher/dashboard-teacher";
 import { StudentListTeacher } from "./student/student-list-teacher/student-list-teacher";
@@ -16,6 +18,10 @@ export const TEACHER_VIEW_ROUTES: Routes = [
   {
     path: 'students-list',
     component: StudentListTeacher
+  },
+  {
+    path:"student-view/:id",
+    component: StudentViewTeacher
   },
   {
     path: 'surveys',
