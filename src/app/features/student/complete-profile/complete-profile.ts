@@ -158,7 +158,7 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
       studyLevel: null,
       studyField: null,
       title: '',
-      year: null,
+      year: new Date().getFullYear(), // may throw issues
       grade: null
     };
   }

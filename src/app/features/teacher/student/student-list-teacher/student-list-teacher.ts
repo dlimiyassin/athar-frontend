@@ -53,7 +53,7 @@ export class StudentListTeacher implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.layoutService.onMenuToggle();
+    //this.layoutService.onMenuToggle();
     this.loadStudents();
   }
 

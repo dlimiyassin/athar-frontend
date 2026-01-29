@@ -45,7 +45,7 @@ export class StudentListAdmin implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.layoutService.onMenuToggle();
+    //this.layoutService.onMenuToggle();
     this.studentService.findAll().subscribe({
       next: students => {
         this.students = students;

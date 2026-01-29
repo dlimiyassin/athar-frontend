@@ -1,113 +1,178 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { ActivatedRoute } from '@angular/router';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+import { StudentService } from '../../../../core/services/student.service';
+import { LayoutService } from '../../../layout/service/layout.service';
 
 import { StudentDto } from '../../../../core/models/student.dto';
 import { UserDto } from '../../../../zBase/security/model/userDto.model';
-import { AcademicProfileDto } from '../../../../core/models/academic-profile.dto';
 import { DiplomaDto } from '../../../../core/models/diploma.dto';
+
 import { StudyLevel } from '../../../../core/enums/study-level.enum';
 import { FieldOfStudy } from '../../../../core/enums/field-of-study.enum';
 import { University } from '../../../../core/enums/university.enum';
 import { School } from '../../../../core/enums/school.enum';
-import { StudentService } from '../../../../core/services/student.service';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { AcademicFieldsConfigService } from '../../../../core/services/academic-fields-config.service';
+import { AcademicProfileFieldDto } from '../../../../core/models/academic-profile-field.dto';
+import { FieldType } from '../../../../core/enums/field-type.enum';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
-  selector: 'app-student-edit',
+  selector: 'app-student-view-teacher',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
     SelectModule,
-    TableModule,
-    ToastModule
+    FormsModule,
+    ProgressSpinnerModule,
+    InputNumberModule,
+    InputTextModule,
+    CheckboxModule,
+    DatePickerModule
   ],
   templateUrl: './student-view-teacher.html',
-  styleUrls: ['./student-view-teacher.css']
+  styleUrl: './student-view-teacher.css'
 })
 export class StudentViewTeacher implements OnInit {
 
+  private fb = inject(FormBuilder);
+  private studentService = inject(StudentService);
+  private route = inject(ActivatedRoute);
+  private layoutService = inject(LayoutService);
+  private academicFieldsConfigService = inject(AcademicFieldsConfigService);
+
   studentForm!: FormGroup;
   student: StudentDto = new StudentDto();
+  academicFields: AcademicProfileFieldDto[] = [];
+  fieldType = FieldType;
 
-  // Dropdown options
+  loading = true;
+  isLoading = false;
+
+  // -------------------------
+  // Select options (PrimeNG v20)
+  // -------------------------
+
   genderOptions = [
     { label: 'Male', value: 'MALE' },
     { label: 'Female', value: 'FEMALE' }
   ];
-  studyLevels = Object.entries(StudyLevel).map(([key, value]) => ({ label: value, value: key }));
-  studyFields = Object.entries(FieldOfStudy).map(([key, value]) => ({ label: value, value: key }));
-  universities = Object.entries(University).map(([key, value]) => ({ label: value, value: key }));
-  schools = Object.entries(School).map(([key, value]) => ({ label: value, value: key }));
 
-  diplomaForm: DiplomaDto = this.createEmptyDiploma();
-  loading = false;
-  isLoading = false;
+  studyLevels = Object.entries(StudyLevel).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
 
-  constructor(
-    private fb: FormBuilder,
-    private studentService: StudentService,
-    private route: ActivatedRoute
-  ) {}
+  universities = Object.entries(University).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+
+  studyFields = Object.entries(FieldOfStudy).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+
+  schools = Object.entries(School).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+
+  // -------------------------
+  // Lifecycle
+  // -------------------------
 
   ngOnInit(): void {
-    // Initialize form
+    //this.layoutService.onMenuToggle();
+    this.initForm();
+    this.loadStudent();
+    this.academicFieldsConfigService.findAll().subscribe(fields => {
+      this.academicFields = fields;
+    });
+  }
+
+  // -------------------------
+  // Form
+  // -------------------------
+
+  private initForm(): void {
     this.studentForm = this.fb.group({
       firstName: [''],
       lastName: [''],
       email: [''],
       gender: ['MALE']
     });
-
-    this.loadStudent();
   }
 
-  loadStudent(): void {
-    this.loading = true;
+  // -------------------------
+  // Data loading
+  // -------------------------
+
+  private loadStudent(): void {
     const userId = this.route.snapshot.paramMap.get('id')!;
+    this.loading = true;
+
     this.studentService.findByUserId(userId).subscribe({
       next: (data) => {
         this.student = data;
 
-        // Patch user info to form
-        if (this.student.user) {
-          this.studentForm.patchValue({
-            firstName: this.student.user.firstName || '',
-            lastName: this.student.user.lastName || '',
-            email: this.student.user.email || '',
-            gender: this.student.academicProfile?.gender || 'MALE'
-          });
-        }
+        this.ensureAcademicProfile();
 
-        // Ensure currentDiploma and diplomas exist
-        if (!this.student.academicProfile) {
-          this.student.academicProfile = {
-            gender: 'MALE',
-            currentDiploma: this.createEmptyDiploma(),
-            diplomas: [],
-            customAttributes: {}
-          };
-        } else {
-          this.student.academicProfile.currentDiploma ||= this.createEmptyDiploma();
-          this.student.academicProfile.diplomas ||= [];
-        }
+        // Patch form (read/update section)
+        this.studentForm.patchValue({
+          firstName: data.user?.firstName ?? '',
+          lastName: data.user?.lastName ?? '',
+          email: data.user?.email ?? '',
+          gender: data.academicProfile?.gender ?? 'MALE'
+        });
 
         this.loading = false;
       },
-      error: () => this.loading = false
+      error: () => (this.loading = false)
     });
   }
 
-  createEmptyDiploma(): DiplomaDto {
+  // -------------------------
+  // Helpers
+  // -------------------------
+
+  private ensureAcademicProfile(): void {
+    if (!this.student.user) {
+      this.student.user = new UserDto();
+    }
+
+    if (!this.student.academicProfile) {
+      this.student.academicProfile = {
+        gender: 'MALE',
+        currentDiploma: this.createEmptyDiploma(),
+        diplomas: [],
+        customAttributes: {}
+      };
+    } else {
+      this.student.academicProfile.currentDiploma ??=
+        this.createEmptyDiploma();
+      this.student.academicProfile.diplomas ??= [];
+    }
+  }
+
+  private createEmptyDiploma(): DiplomaDto {
     return {
       title: '',
       studyLevel: null,
@@ -119,14 +184,9 @@ export class StudentViewTeacher implements OnInit {
     };
   }
 
-  addDiploma(): void {
-    this.student.academicProfile.diplomas.push({ ...this.diplomaForm });
-    this.diplomaForm = this.createEmptyDiploma();
-  }
-
-  removeDiploma(index: number): void {
-    this.student.academicProfile.diplomas.splice(index, 1);
-  }
+  // -------------------------
+  // Filtering helpers (BAC logic)
+  // -------------------------
 
 bacKeys = [
   FieldOfStudy.SCIENCES_MATH_A as string,
@@ -150,39 +210,37 @@ getNonBacFieldsOfStudy = (fields: { label: string; value: string }[]) =>
   fields.filter(f => !this.bacKeys.includes(f.label));
 
 
+  excludeBacLevels(
+    levels: { label: string; value: string }[]
+  ) {
+    return levels.filter(l => l.value !== 'BAC');
+  }
 
-excludeBacLevels(level: { label: string; value: string; }[]): any[]|null|undefined {
-  return level.filter(option => option.value !== 'BAC');
-}
+  // -------------------------
+  // Submit
+  // -------------------------
 
   onSubmit(): void {
-    if (!this.student.user) {
-      this.student.user = new UserDto();
-    }
+    if (!this.student || !this.student.user) return;
 
     const formValue = this.studentForm.value;
 
-    // Update UserDto safely
-    this.student.user.firstName = formValue.firstName || '';
-    this.student.user.lastName = formValue.lastName || '';
-    this.student.user.email = formValue.email || '';
+    // Update User
+    this.student.user.firstName = formValue.firstName;
+    this.student.user.lastName = formValue.lastName;
+    this.student.user.email = formValue.email;
 
-    // Update gender in academicProfile
-    this.student.academicProfile.gender = formValue.gender || 'MALE';
+    // Update Academic Profile
+    this.student.academicProfile.gender = formValue.gender;
 
     this.isLoading = true;
 
     this.studentService.edit(this.student).subscribe({
-      next: (data) => {
-        this.student = data;
+      next: (updated) => {
+        this.student = updated;
         this.isLoading = false;
-        alert('Student updated successfully!');
       },
-      error: () => {
-        this.isLoading = false;
-        alert('Error updating student.');
-      }
+      error: () => (this.isLoading = false)
     });
   }
-
 }
