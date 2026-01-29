@@ -10,7 +10,7 @@ export class UserDto extends BaseDto {
     public phoneNumber!: string;
     public enabled!: boolean;
     public roleDtos: Array<RoleDto>;
-    public status! : UserStatus;
+    public status! : UserStatus | null;
     public lastLogin!: string;
 
     constructor() {

@@ -1,8 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  FormBuilder,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
@@ -14,11 +12,8 @@ import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { StudentService } from '../../../../core/services/student.service';
-import { LayoutService } from '../../../layout/service/layout.service';
 
 import { StudentDto } from '../../../../core/models/student.dto';
-import { UserDto } from '../../../../zBase/security/model/userDto.model';
-import { DiplomaDto } from '../../../../core/models/diploma.dto';
 
 import { StudyLevel } from '../../../../core/enums/study-level.enum';
 import { FieldOfStudy } from '../../../../core/enums/field-of-study.enum';
@@ -30,6 +25,12 @@ import { AcademicProfileFieldDto } from '../../../../core/models/academic-profil
 import { FieldType } from '../../../../core/enums/field-type.enum';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
+import { UserStatus } from '../../../../core/enums/UserStatus';
+import { Gender } from '../../../../core/enums/gender';
+import { MessageService } from 'primeng/api';
+import { Toast } from "primeng/toast";
+import { Divider } from "primeng/divider";
+import { DiplomaDto } from '../../../../core/models/diploma.dto';
 
 @Component({
   selector: 'app-student-view-teacher',
@@ -45,35 +46,65 @@ import { DatePickerModule } from 'primeng/datepicker';
     InputNumberModule,
     InputTextModule,
     CheckboxModule,
-    DatePickerModule
-  ],
+    DatePickerModule,
+    Toast,
+    Divider
+],
   templateUrl: './student-view-teacher.html',
   styleUrl: './student-view-teacher.css'
 })
 export class StudentViewTeacher implements OnInit {
 
-  private fb = inject(FormBuilder);
-  private studentService = inject(StudentService);
-  private route = inject(ActivatedRoute);
-  private layoutService = inject(LayoutService);
-  private academicFieldsConfigService = inject(AcademicFieldsConfigService);
+student: StudentDto = {
+  id: null,
+  user: {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    phoneNumber: '',
+    enabled: true,
+    roleDtos: [],
+    status: UserStatus.EN_ATTENTE,
+    lastLogin: ''
+  },
+  academicProfile: {
+    gender: null,
+    currentDiploma: {
+      university: null,
+      school: null,
+      studyLevel: null,
+      studyField: null,
+      title: '',
+      year: new Date().getFullYear(),
+      grade: null
+    },
+    diplomas: [],
+    customAttributes: {}
+  }
+  };
 
-  studentForm!: FormGroup;
-  student: StudentDto = new StudentDto();
   academicFields: AcademicProfileFieldDto[] = [];
   fieldType = FieldType;
-
   loading = true;
   isLoading = false;
 
-  // -------------------------
-  // Select options (PrimeNG v20)
-  // -------------------------
+  private studentService = inject(StudentService);
+  private route = inject(ActivatedRoute);
+  private academicFieldsConfigService = inject(AcademicFieldsConfigService);
+  private messageService = inject(MessageService);
+  
+  statusOptions = Object.keys(UserStatus).map(key => ({
+    label: UserStatus[key as keyof typeof UserStatus],
+    value: key
+  }));
 
-  genderOptions = [
-    { label: 'Male', value: 'MALE' },
-    { label: 'Female', value: 'FEMALE' }
-  ];
+  genderOptions = Object.keys(Gender).map(key => ({
+    label: Gender[key as keyof typeof Gender],
+    value: key
+  }));
+
 
   studyLevels = Object.entries(StudyLevel).map(([key, value]) => ({
     label: value,
@@ -95,31 +126,12 @@ export class StudentViewTeacher implements OnInit {
     value: key
   }));
 
-  // -------------------------
-  // Lifecycle
-  // -------------------------
 
   ngOnInit(): void {
-    //this.layoutService.onMenuToggle();
-    this.initForm();
     this.loadStudent();
-    this.academicFieldsConfigService.findAll().subscribe(fields => {
-      this.academicFields = fields;
-    });
+    this.loadAcademicFields();
   }
 
-  // -------------------------
-  // Form
-  // -------------------------
-
-  private initForm(): void {
-    this.studentForm = this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      email: [''],
-      gender: ['MALE']
-    });
-  }
 
   // -------------------------
   // Data loading
@@ -131,61 +143,58 @@ export class StudentViewTeacher implements OnInit {
 
     this.studentService.findByUserId(userId).subscribe({
       next: (data) => {
-        this.student = data;
+        this.student = data;      
+        this.student.user!.status = data.user?.status || null;
+        this.student.academicProfile.gender = data.academicProfile?.gender || null;
+        this.student.academicProfile.customAttributes["birthdate"] = new Date(data.academicProfile?.customAttributes["birthdate"] || '');
+        const customAttrs = this.student.academicProfile.customAttributes;
 
-        this.ensureAcademicProfile();
-
-        // Patch form (read/update section)
-        this.studentForm.patchValue({
-          firstName: data.user?.firstName ?? '',
-          lastName: data.user?.lastName ?? '',
-          email: data.user?.email ?? '',
-          gender: data.academicProfile?.gender ?? 'MALE'
-        });
-
+        if (customAttrs) {
+          Object.keys(customAttrs).forEach((key) => {
+            const value = customAttrs[key];
+          
+            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+              customAttrs[key] = new Date(value);
+            }
+          });
+        }
         this.loading = false;
       },
       error: () => (this.loading = false)
     });
   }
 
+    
+deleteDiploma(index: number): void {
+  this.student.academicProfile.diplomas.splice(index, 1);
+}
+
+
+addPreviousDiploma(): void {
+  const newDiploma: DiplomaDto = {
+    university: null,
+    school: null,
+    studyLevel: null,
+    studyField: null,
+    title: '',
+    year: null,
+    grade: null
+  };
+
+  this.student.academicProfile.diplomas.unshift(newDiploma);
+}
+
+
+  loadAcademicFields(): void {
+        this.academicFieldsConfigService.findAll().subscribe(fields => {
+      this.academicFields = fields.sort(
+                              (a, b) => (a.type === FieldType.BOOLEAN ? 1 : 0) - (b.type === FieldType.BOOLEAN ? 1 : 0)
+                            );
+    });
+  }
+
   // -------------------------
   // Helpers
-  // -------------------------
-
-  private ensureAcademicProfile(): void {
-    if (!this.student.user) {
-      this.student.user = new UserDto();
-    }
-
-    if (!this.student.academicProfile) {
-      this.student.academicProfile = {
-        gender: 'MALE',
-        currentDiploma: this.createEmptyDiploma(),
-        diplomas: [],
-        customAttributes: {}
-      };
-    } else {
-      this.student.academicProfile.currentDiploma ??=
-        this.createEmptyDiploma();
-      this.student.academicProfile.diplomas ??= [];
-    }
-  }
-
-  private createEmptyDiploma(): DiplomaDto {
-    return {
-      title: '',
-      studyLevel: null,
-      studyField: null,
-      year: null,
-      grade: null,
-      school: null,
-      university: null
-    };
-  }
-
-  // -------------------------
-  // Filtering helpers (BAC logic)
   // -------------------------
 
 bacKeys = [
@@ -201,7 +210,6 @@ bacKeys = [
   FieldOfStudy.BAC_PRO_COMMERCE as string,
   FieldOfStudy.BAC_PRO_TECHNIQUE as string
 ];
-
 
 getBacOptions = (fields: { label: string; value: string }[]) =>
   fields.filter(f => this.bacKeys.includes(f.label));
@@ -223,24 +231,14 @@ getNonBacFieldsOfStudy = (fields: { label: string; value: string }[]) =>
   onSubmit(): void {
     if (!this.student || !this.student.user) return;
 
-    const formValue = this.studentForm.value;
-
-    // Update User
-    this.student.user.firstName = formValue.firstName;
-    this.student.user.lastName = formValue.lastName;
-    this.student.user.email = formValue.email;
-
-    // Update Academic Profile
-    this.student.academicProfile.gender = formValue.gender;
-
     this.isLoading = true;
-
     this.studentService.edit(this.student).subscribe({
       next: (updated) => {
-        this.student = updated;
+        this.loadStudent()
         this.isLoading = false;
+        this.messageService.add({severity:'success', summary:'Success', detail:'The student\'s information has been successfully updated.'});
       },
-      error: () => (this.isLoading = false)
+      error: () => {this.isLoading = false; this.messageService.add({severity:'error', summary:'Error', detail:'An error occurred while updating the student\'s information.'});}
     });
   }
 }

@@ -41,10 +41,10 @@ export class ViewTeacher implements OnInit {
   teacher!: UserDto;
   form!: FormGroup;
 
-statusOptions = Object.keys(UserStatus).map(key => ({
-  label: UserStatus[key as keyof typeof UserStatus],
-  value: key
-}));
+  statusOptions = Object.keys(UserStatus).map(key => ({
+    label: UserStatus[key as keyof typeof UserStatus],
+    value: key
+  }));
 
 
   ngOnInit(): void {
@@ -68,12 +68,8 @@ statusOptions = Object.keys(UserStatus).map(key => ({
     this.teacherService.findById(this.teacherId).subscribe({
       next: (data) => {
         this.teacher = data;
-        console.log(this.statusOptions);
         const matchedStatus = this.statusOptions
         .find(v => v.value === data.status);
-
-        console.log(data.status);
-        console.log(matchedStatus);
         
         this.form.patchValue({
           firstName: data.firstName,

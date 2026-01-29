@@ -27,6 +27,7 @@ import { University } from '../../../core/enums/university.enum';
 import { DiplomaDto } from '../../../core/models/diploma.dto';
 import { School } from '../../../core/enums/school.enum';
 import { FieldOfStudy } from '../../../core/enums/field-of-study.enum';
+import { Gender } from '../../../core/enums/gender';
 
 @Component({
   selector: 'app-complete-profile',
@@ -138,6 +139,18 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
         this.academicProfile = student.academicProfile;
         this.academicProfile.currentDiploma = student.academicProfile?.currentDiploma;
         this.academicProfile.diplomas = student.academicProfile?.diplomas;
+        this.academicProfile.gender = student.academicProfile?.gender || null;
+        this.academicProfile.customAttributes["birthdate"] = new Date(student.academicProfile?.customAttributes["birthdate"] || '');
+        const customAttrs = this.academicProfile.customAttributes;
+        if (customAttrs) {
+          Object.keys(customAttrs).forEach((key) => {
+            const value = customAttrs[key];
+          
+            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+              customAttrs[key] = new Date(value);
+            }
+          });
+        }
     });
 });
 
@@ -295,9 +308,9 @@ this.userService.loadAuthenticatedUser().subscribe(user => {
     });
   }
 
-  genderOptions = [
-  { label: 'Male', value: 'MALE' },
-  { label: 'Female', value: 'FEMALE' }
-];
+  genderOptions = Object.keys(Gender).map(key => ({
+    label: Gender[key as keyof typeof Gender],
+    value: key
+  }));
 
 }
