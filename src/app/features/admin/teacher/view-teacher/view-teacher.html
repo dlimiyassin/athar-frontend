@@ -1,3 +1,5 @@
+<p-toast />
+
 <div class="min-h-screen">
     <!-- Loading -->
     <div *ngIf="loading" class="flex justify-center items-center h-64">
@@ -84,6 +86,7 @@
             [options]="statusOptions"
             optionLabel="label"
             optionValue="value"
+            formControlName="status"
             appendTo="body"
             class="w-full"
           />

@@ -47,9 +47,9 @@ export class StudentListTeacher implements OnInit {
 
   constructor(
     private studentService: StudentService,
-    private confirmationService: ConfirmationService,
     public layoutService: LayoutService,
     public router: Router,
+    private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 

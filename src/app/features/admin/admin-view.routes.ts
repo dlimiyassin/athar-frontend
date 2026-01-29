@@ -12,6 +12,7 @@ import { DashboardAdmin } from './dashboard-admin/dashboard-admin';
 import { ExportImportAdmin } from './export-import-admin/export-import-admin';
 import { ViewTeacher } from './teacher/view-teacher/view-teacher';
 import { ViewStudentAdmin } from './student/view-student-admin/view-student-admin';
+import { CreateTeacher } from './teacher/create-teacher/create-teacher';
 
 export const ADMIN_VIEW_ROUTES: Routes = [
   {
@@ -21,6 +22,10 @@ export const ADMIN_VIEW_ROUTES: Routes = [
   {
     path: 'teacher-list',
     component: TeacherList
+  },
+  {
+    path: 'teacher-create',
+    component: CreateTeacher
   },
   {
     path: 'teacher-view/:id',

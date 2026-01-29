@@ -140,4 +140,8 @@ export class TeacherList implements OnInit {
   viewRow(teacher: UserDto) {
     this.router.navigate(['app/admin/view/teacher-view/', teacher.id]);
   }
+
+  addTeacher() {
+    this.router.navigate(['app/admin/view/teacher-create']);
+  }
 }

@@ -12,6 +12,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { UserStatus } from '../../../../core/enums/UserStatus';
 import { TeacherService } from '../../../../core/services/teacher.service';
 import { UserDto } from '../../../../zBase/security/model/userDto.model';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from "primeng/toast";
 
 @Component({
   selector: 'app-view-teacher',
@@ -23,8 +25,9 @@ import { UserDto } from '../../../../zBase/security/model/userDto.model';
     ButtonModule,
     SelectModule,
     TagModule,
-    ProgressSpinnerModule
-  ],
+    ProgressSpinnerModule,
+    ToastModule
+],
   templateUrl: './view-teacher.html',
   styleUrl: './view-teacher.css',
 })
@@ -33,6 +36,8 @@ export class ViewTeacher implements OnInit {
   private route = inject(ActivatedRoute);
   private teacherService = inject(TeacherService);
   private fb = inject(FormBuilder);
+  private messageService = inject(MessageService);
+
 
   teacherId!: string;
   loading = true;
@@ -101,9 +106,11 @@ export class ViewTeacher implements OnInit {
       next: (res) => {
         this.teacher = res;
         this.submitting = false;
+        this.messageService.add({severity:'success', summary:'Success', detail:'The teacher\'s information has been successfully updated.'});
       },
       error: () => {
         this.submitting = false;
+        this.messageService.add({severity:'error', summary:'Error', detail:'An error occurred while updating the teacher\'s information.'});
       }
     });
   }

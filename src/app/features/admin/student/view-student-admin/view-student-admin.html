@@ -1,1 +1,362 @@
-<p>view-student-admin works!</p>
+
+<p-toast />
+<div class="min-h-screen">
+
+    <!-- Loading -->
+     @if (loading) {
+      <div class="flex justify-center items-center h-64">
+        <p-progressSpinner />
+      </div>
+     }
+
+
+
+
+
+    <!-- Profile Card -->
+     @if (!loading) {
+      
+      <!-- Header -->
+       <div class="flex flex-row justify-between items-start">
+         <h2 class="text-2xl font-semibold text-gray-900">
+           Student Profile
+         </h2>
+
+         <div class="flex">
+           <p-button
+             label="Save Changes"
+             icon="pi pi-save"
+             [loading]="isLoading"
+             (onClick)="onSubmit()"
+           />
+         </div>
+       </div>
+
+        <!-- Personal Information -->
+       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 ">
+        <div class="mb-4">
+           <h2 class="text-2xl font-semibold text-gray-900">
+             Personal Information
+           </h2>
+        </div>
+         <div *ngIf="student.user"  class="grid grid-cols-1 md:grid-cols-2 gap-6">
+   
+           <!-- First Name -->
+           <div>
+             <label class="block text-sm font-medium text-gray-700 mb-1">
+               First Name
+             </label>
+             <input pInputText [(ngModel)]="student.user.firstName" class="w-full" />
+           </div>
+   
+           <!-- Last Name -->
+           <div>
+             <label class="block text-sm font-medium text-gray-700 mb-1">
+               Last Name
+             </label>
+             <input pInputText [(ngModel)]="student.user.lastName" class="w-full" />
+           </div>
+   
+           <!-- Email (read-only like Big Tech) -->
+           <div>
+             <label class="block text-sm font-medium text-gray-700 mb-1">
+               Email
+             </label>
+             <input
+               pInputText
+               [(ngModel)]="student.user.email"
+               class="w-full bg-gray-100"
+             />
+           </div>
+
+        <!-- Status -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Status
+          </label>
+          <p-select
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="student.user.status"
+            appendTo="body"
+            class="w-full"
+          />
+          </div> 
+          <!-- Gender -->
+           <div>
+             <label class="block text-sm font-medium text-gray-700 mb-1">
+               Gender
+             </label>
+             <p-select
+               [options]="genderOptions"
+               optionLabel="label"
+               optionValue="value"
+               [(ngModel)]="student.academicProfile.gender"
+               appendTo="body"
+               class="w-full"
+             />
+           </div>
+
+             @for (field of academicFields; track field.id) {
+
+                <div class="">
+                
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ field.label }}
+                  </label>
+                
+                  @switch (field.type) {
+                  
+                    @case (fieldType.TEXT) {
+                      <input
+                        pInputText
+                        [(ngModel)]="student.academicProfile.customAttributes[field.name]"
+                        [ngModelOptions]="{ standalone: true }" />
+                    }
+                  
+                    @case (fieldType.NUMBER) {
+                      <p-inputNumber
+                        [(ngModel)]="student.academicProfile.customAttributes[field.name]"
+                        [ngModelOptions]="{ standalone: true }">
+                      </p-inputNumber>
+                    }
+                  
+                    @case (fieldType.BOOLEAN) {
+                      <p-checkbox
+                        binary="true"
+                        [(ngModel)]="student.academicProfile.customAttributes[field.name]"
+                        [ngModelOptions]="{ standalone: true }">
+                      </p-checkbox>
+                    }
+                  
+                    @case (fieldType.DATE) {
+                      <p-datepicker
+                        [(ngModel)]="student.academicProfile.customAttributes[field.name]"
+                        [ngModelOptions]="{ standalone: true }">
+                      </p-datepicker>
+                    }
+                  
+                  }
+                
+                </div>
+              
+              }
+        </div>
+
+       </div>
+
+
+       <!-- Current Diploma -->
+       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mt-8">  
+           <h2 class="text-lg font-semibold text-gray-900 mb-4">
+             Current Diploma
+           </h2>
+   
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+   
+             <div>
+               <label class="block text-sm font-medium text-gray-700 mb-1">
+                 Study Level
+               </label>
+               <p-select
+                 [options]="studyLevels"
+                 optionLabel="label"
+                 optionValue="value"
+                 [(ngModel)]="student.academicProfile.currentDiploma.studyLevel"
+                 appendTo="body"
+                 class="w-full"
+               />
+             </div>
+   
+             <div>
+               <label class="block text-sm font-medium text-gray-700 mb-1">
+                 Field of Study
+               </label>
+               <p-select
+                 [options]="studyFields"
+                 optionLabel="label"
+                 optionValue="value"
+                 [(ngModel)]="student.academicProfile.currentDiploma.studyField"
+                 appendTo="body"
+                 class="w-full"
+               />
+             </div>
+   
+             <div>
+               <label class="block text-sm font-medium text-gray-700 mb-1">
+                 School
+               </label>
+               <p-select
+                 [options]="schools"
+                 optionLabel="label"
+                 optionValue="value"
+                 [(ngModel)]="student.academicProfile.currentDiploma.school"
+                 appendTo="body"
+                 class="w-full"
+               />
+             </div>
+   
+             <div>
+               <label class="block text-sm font-medium text-gray-700 mb-1">
+                 University
+               </label>
+               <p-select
+                 [options]="universities"
+                 optionLabel="label"
+                 optionValue="value"
+                 [(ngModel)]="student.academicProfile.currentDiploma.university"
+                 appendTo="body"
+                 class="w-full"
+               />
+   
+             </div>
+   
+           </div>
+       </div>
+
+
+       <!-- Previous Diplomas -->
+       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mt-8">
+          <!-- Section header -->
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold text-gray-900">
+              Previous Diplomas
+            </h2>
+          
+            <button
+              pButton
+              icon="pi pi-plus"
+              label="Add"
+              class="p-button-text"
+              (click)="addPreviousDiploma()">
+            </button>
+          </div>
+           @for (diploma of student.academicProfile.diplomas; track $index) {
+                    
+             <!-- Header row -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center">
+                <h5 class="text-base font-semibold text-gray-800">
+                  {{ diploma.title || 'Diploma' }}
+                </h5>              
+                <button
+                  pButton
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-danger"
+                  (click)="deleteDiploma($index)">
+                </button>
+              </div>
+            
+              <p-divider class="my-3"></p-divider>
+            
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+              <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">
+                     Study Level
+                   </label>
+                   <p-select
+                     [options]="studyLevels"
+                     optionLabel="label"
+                     optionValue="value"
+                     [(ngModel)]="diploma.studyLevel"
+                     appendTo="body"
+                     class="w-full"
+                     [disabled]="false"
+                      />
+                </div>
+              @if(diploma.studyLevel === 'BAC'){
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Field of Study
+                  </label>
+                  <p-select
+                    [options]="getBacOptions(studyFields)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="diploma.studyField"
+                    appendTo="body"
+                    class="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    School
+                  </label>
+                  <input class="w-full"  pInputText placeholder="School"
+                 [(ngModel)]="diploma.school" />
+                </div>
+
+
+              } @else {
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Diplloma Title</label>
+                  <input class="w-full"  pInputText placeholder="Title"
+                     [(ngModel)]="diploma.title" />
+                </div>
+
+                <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">
+                        University
+                      </label>
+                      <p-select
+                        [options]="universities"
+                        optionLabel="label"
+                        optionValue="value"
+                        [(ngModel)]="diploma.university"
+                        appendTo="body"
+                        class="w-full"
+                      />                
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Field of Study
+                  </label>
+                  <p-select
+                    [options]="getNonBacFieldsOfStudy(studyFields)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="diploma.studyField"
+                    appendTo="body"
+                    class="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Shcool
+                  </label>
+                  <p-select
+                    [options]="schools"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="diploma.school"
+                    appendTo="body"
+                    class="w-full"
+                  />
+                </div>
+
+              }
+
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                <p-inputNumber class="w-full" mode="decimal" [useGrouping]="false" placeholder="Year"
+                    [(ngModel)]="diploma.year">
+                </p-inputNumber>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                <p-inputNumber class="w-full" mode="decimal" [useGrouping]="false" [max]="20.00" [min]="0.00" placeholder="Grade"
+                    [(ngModel)]="diploma.grade">
+                </p-inputNumber>
+              </div>
+            </div>
+            }
+       </div>
+     }
+</div>        

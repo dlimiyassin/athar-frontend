@@ -1,33 +1,37 @@
 <p-toast />
 
 <!-- Header -->
-<div class="mb-1 flex items-center gap-3">
-  <h2 class="text-3xl font-bold">Teachers</h2>
-  <p-tag
-    class="bg-athar-light text-athar border-athar mb-2"
-    [value]="'Total of '+teachers.length">
-  </p-tag>
-
-</div>
-<div class="card space-y-4">
-  <!-- Header -->
-  <!-- <div class="flex items-center justify-between">
-    <div>
-      <h1 class="title">Teachers</h1>
-      <p class="subtitle">
-        Manage teachers who can create surveys and analyze results.
-      </p>
-    </div>
-
-    <button
+   <!-- Header -->
+<div class="flex items-center justify-between">
+  <div class="mb-1 flex items-center gap-3">
+    <h2 class="text-3xl font-bold">Teachers</h2>
+    <p-tag
+      class="bg-athar-light text-athar border-athar mb-2"
+      [value]="'Total of '+teachers.length">
+    </p-tag>
+  
+  </div>
+  <button
       class="primary-btn"
-      (click)="addNewRow()"
+      (click)="addTeacher()"
       [disabled]="hasPendingNewRow()"
     >
       + Add
-    </button>
-  </div> -->
+  </button>
 
+  <!-- Inline creation row -->
+    <!-- 
+    <button
+      class="primary-btn"
+      (click)="addTeacher()"
+      [disabled]="hasPendingNewRow()"
+    >
+      + Add
+  </button> -->
+</div> 
+
+
+<div class="card space-y-4">
   <p-table
     [value]="teachers"
     editMode="cell"
