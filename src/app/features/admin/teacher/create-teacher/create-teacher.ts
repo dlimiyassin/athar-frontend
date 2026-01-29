@@ -54,6 +54,7 @@ export class CreateTeacher implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
       phoneNumber: [''],
       status: ['', Validators.required],
       enabled: [true]
