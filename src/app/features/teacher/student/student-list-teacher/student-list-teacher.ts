@@ -17,7 +17,6 @@ import { LayoutService } from '../../../layout/service/layout.service';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SurveyDto } from '../../../../core/models/survey.dto';
 import { Router } from '@angular/router';
 
 @Component({
@@ -32,7 +31,9 @@ import { Router } from '@angular/router';
     InputIconModule,
     InputTextModule,
     SelectModule,
-    ButtonModule, ToastModule, ConfirmDialogModule
+    ButtonModule, 
+    ToastModule, 
+    ConfirmDialogModule
   ],
   templateUrl: './student-list-teacher.html',
   styleUrl: './student-list-teacher.css'
@@ -108,21 +109,22 @@ export class StudentListTeacher implements OnInit {
   }
 
     onDelete(student: StudentDto) {
-      this.studentService.delete(Number(student.id)).subscribe({
+      
+      this.studentService.delete(student.id as string).subscribe({
         next: () => {
           this.loadStudents();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Survey deleted successfully.'
+            detail: 'Student deleted successfully.'
           });
         },
         error: (error) => {
-          console.error('Error deleting survey:', error);
+          console.error('Error deleting student:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to delete survey.'
+            detail: 'Failed to delete student.'
           });
         }
       });

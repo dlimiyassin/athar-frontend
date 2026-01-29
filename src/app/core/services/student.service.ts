@@ -91,9 +91,10 @@ export class StudentService {
         return this.http.get<StudentDto>(this.API + "/user/" + userId);
     }
 
-    public delete(id: number) {
-        return this.http.delete<number>(this.API + "/id/" + id);
-    }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/id/${id}`);
+  }
 
     public edit(student: StudentDto) {
         return this.http.put<StudentDto>(this.API, student);

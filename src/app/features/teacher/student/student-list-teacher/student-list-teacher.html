@@ -1,3 +1,6 @@
+  <p-toast/>
+  <p-confirmDialog></p-confirmDialog>
+
 <!-- Header -->
 <div class="mb-1 flex items-center gap-3">
   <h2 class="text-3xl font-bold">Students</h2>
@@ -132,7 +135,7 @@
             class="p-button-text p-button-sm"
             (click)="viewStudent(student)"
             ></button>
-            <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></button>
+            <button pButton (click)="confirmDelete(student)" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></button>
           </div>
         </td>
       </tr>
